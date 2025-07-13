@@ -64,7 +64,7 @@ $notconfirmedorder=mysqli_num_rows($query1);
                     <div class="col-lg-4">
                         <div class="ibox ">
                             <div class="ibox-title">
-                                <?php $query2=mysqli_query($con,"Select * from  tblorderaddresses where OrderFinalStatus ='Order Confirmed'");
+                                <?php $query2=mysqli_query($con,"Select * from  tblorderaddresses where OrderFinalStatus ='Đơn hàng đã xác nhận'");
 $conforder=mysqli_num_rows($query2);
 ?>
       <a class="text-muted text-uppercase m-b-20" href="confirmed-order.php" style="font-size: 20px"><strong>Đơn hàng đã xác nhận</strong></a>                          
@@ -84,7 +84,7 @@ $conforder=mysqli_num_rows($query2);
          <div class="col-lg-4">
                         <div class="ibox ">
                             <div class="ibox-title">
-                                <?php $query3=mysqli_query($con,"Select * from  tblorderaddresses where OrderFinalStatus ='Cake being Prepared'");
+                                <?php $query3=mysqli_query($con,"Select * from  tblorderaddresses where OrderFinalStatus ='Bánh đang được chuẩn bị'");
 $beigpre=mysqli_num_rows($query3);
 ?>
 <a class="text-muted text-uppercase m-b-20" href="cakebeingprepared.php" style="font-size: 20px"><strong>Bánh đang được chuẩn bị</strong></a>
@@ -101,7 +101,7 @@ $beigpre=mysqli_num_rows($query3);
                     <div class="col-lg-4">
                         <div class="ibox ">
                             <div class="ibox-title">
-                                <?php $query4=mysqli_query($con,"Select * from tblorderaddresses where OrderFinalStatus ='Cake Pickup'");
+                                <?php $query4=mysqli_query($con,"Select * from tblorderaddresses where OrderFinalStatus ='Nhận bánh'");
 $foodpickup=mysqli_num_rows($query4);
 ?>
 <a class="text-muted text-uppercase m-b-20" href="cake-pickup.php" style="font-size: 20px"><strong> Nhận bánh</strong></a>
@@ -117,7 +117,7 @@ $foodpickup=mysqli_num_rows($query4);
                     <div class="col-lg-4">
                         <div class="ibox ">
                             <div class="ibox-title">
-                                <?php $query5=mysqli_query($con,"Select * from  tblorderaddresses where OrderFinalStatus ='Cake Delivered'");
+                                <?php $query5=mysqli_query($con,"Select * from  tblorderaddresses where OrderFinalStatus ='Bánh được giao'");
 $fooddel=mysqli_num_rows($query5);
 ?>
 <a class="text-muted text-uppercase m-b-20" href="Cake-delivered.php" style="font-size: 20px"><strong>Tổng số bánh giao hàng</strong></a>
@@ -134,7 +134,7 @@ $fooddel=mysqli_num_rows($query5);
            <div class="col-lg-4">
                         <div class="ibox ">
                             <div class="ibox-title">
-<?php $query1=mysqli_query($con,"Select * from  tblorderaddresses where OrderFinalStatus='Order Cancelled'");
+<?php $query1=mysqli_query($con,"Select * from  tblorderaddresses where OrderFinalStatus='Đơn hàng đã bị hủy'");
 $notconfirmedorder=mysqli_num_rows($query1);
 ?>
 <a class="text-muted text-uppercase m-b-20" href="canclled-order.php" style="font-size: 20px"><strong>Đơn hàng đã hủy</strong></a>

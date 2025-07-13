@@ -73,11 +73,11 @@ $tdate=$_POST['todate'];
 <?php
 $ret=mysqli_query($con,"select month(OrderTime) as lmonth,year(OrderTime) as lyear,
     count(ID) as totalcount,count(if((OrderFinalStatus='' || OrderFinalStatus is null),0,null)) as uncofirmedorder,
-    count(if(OrderFinalStatus='Order Confirmed',0,null)) as confirmedorder,
-    count(if(OrderFinalStatus='Cake being Prepared',0,null)) as fdbgpr,
-    count(if(OrderFinalStatus='Cake Pickup',0,null)) as foodpickup,
-    count(if(OrderFinalStatus='Cake Delivered',0,null)) as fooddel,
-    count(if(OrderFinalStatus='Order Cancelled',0,null)) as foodcancel 
+    count(if(OrderFinalStatus='Đơn hàng đã được xác nhận',0,null)) as confirmedorder,
+    count(if(OrderFinalStatus='Bánh đang được chuẩn bị',0,null)) as fdbgpr,
+    count(if(OrderFinalStatus='Nhận bánh',0,null)) as foodpickup,
+    count(if(OrderFinalStatus='Bánh được giao',0,null)) as fooddel,
+    count(if(OrderFinalStatus='Đơn hàng đã bị hủy',0,null)) as foodcancel 
     from tblorderaddresses where date(OrderTime) between '$fdate' and '$tdate' group by lmonth,lyear");
 while ($row=mysqli_fetch_array($ret)) {
 

@@ -57,7 +57,7 @@ if (strlen($_SESSION['fosaid']==0)) {
                 </tr>
               </thead>
               <?php
-$ret=mysqli_query($con,"select * from tblorderaddresses where OrderFinalStatus='Order Cancelled'");
+$ret=mysqli_query($con,"select * from tblorderaddresses where OrderFinalStatus='Đơn hàng đã bị hủy'");
 $cnt=1;
 while ($row=mysqli_fetch_array($ret)) {
 

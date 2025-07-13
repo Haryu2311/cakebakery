@@ -56,7 +56,7 @@ if (strlen($_SESSION['fosaid']==0)) {
                 </tr>
               </thead>
               <?php
-$ret=mysqli_query($con,"select * from tblorderaddresses where OrderFinalStatus='Cake Pickup'");
+$ret=mysqli_query($con,"select * from tblorderaddresses where OrderFinalStatus='Nhận bánh'");
 $cnt=1;
 while ($row=mysqli_fetch_array($ret)) {
 

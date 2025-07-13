@@ -49,10 +49,10 @@ while ($row=mysqli_fetch_array($ret)) {
  <td><?php  echo $row['remark'];?></td> 
   <td><?php  echo $row['bstatus']; 
 if($cancelledby==1){
-echo "("."by user".")";
+echo "("."bởi người dùng".")";
 } else {
 
-echo "("."by resturent".")";
+echo "("."bởi nhà hàng".")";
 }
 
   ?></td> 

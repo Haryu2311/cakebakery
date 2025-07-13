@@ -6,7 +6,7 @@ if(isset($_POST['submit']))
   {
     
    $orderid=$_GET['oid'];
-    $ressta="Order Cancelled";
+    $ressta="Đơn hàng đã bị hủy";
     $remark=$_POST['restremark'];
     $canclbyuser=1;
  
@@ -82,7 +82,7 @@ echo $status;
 
 </form>
     <?php } else { ?>
-<?php if($status=='Order Cancelled'){?>
+<?php if($status=='Đơn hàng đã bị hủy'){?>
 <p style="color:red; font-size:20px;"> Đơn hàng đã hủy</p>
 <?php } else { ?>
   <p style="color:red; font-size:20px;"> Bạn không thể hủy việc này. Đơn hàng đang được vận chuyển hoặc đã giao</p>

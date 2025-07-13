@@ -17,7 +17,7 @@ if(isset($_POST['submit']))
     $query=mysqli_query($con,"insert into tblfoodtracking(OrderId,remark,status) value('$oid','$remark','$ressta')"); 
    $query=mysqli_query($con, "update   tblorderaddresses set OrderFinalStatus='$ressta' where Ordernumber='$oid'");
     if ($query) {
-    $msg="Order Has been updated";
+    $msg="Đơn hàng đã được cập nhật";
   }
   else
     {
@@ -146,30 +146,31 @@ Chi tiết người dùng</td></tr>
     <th>Trạng thái cuối cùng của đơn hàng</th>
     <td> <?php  
     $orserstatus=$row['OrderFinalStatus'];
-if($row['OrderFinalStatus']=="Order Confirmed")
+
+if($row['OrderFinalStatus']=="Đơn hàng đã được xác nhận")
 {
-  echo "Order Confirmed";
+  echo "Đơn hàng đã được xác nhận";
 }
 
-if($row['OrderFinalStatus']=="Cake being Prepared")
+if($row['OrderFinalStatus']=="Bánh đang được chuẩn bị")
 {
-  echo "Cake being Prepared";
+  echo "Bánh đang được chuẩn bị";
 }
-if($row['OrderFinalStatus']=="Cake Pickup")
+if($row['OrderFinalStatus']=="Nhận bánh")
 {
-  echo "Cake Pickup";
+  echo "Nhận bánh";
 }
-if($row['OrderFinalStatus']=="Cake Delivered")
+if($row['OrderFinalStatus']=="Bánh được giao")
 {
-  echo "Cake Delivered";
+  echo "Bánh được giao";
 }
 if($row['OrderFinalStatus']=="")
 {
-  echo "Wait for restaurants approval";
+  echo "Chờ nhà hàng phê duyệt";
 }
-if($row['OrderFinalStatus']=="Order Cancelled")
+if($row['OrderFinalStatus']=="Đơn hàng đã bị hủy")
 {
-  echo "Order Cancelled";
+  echo "Đơn hàng đã bị hủy";
 }
 
 
@@ -243,7 +244,7 @@ while ($row1 = mysqli_fetch_array($query)) {
 
 <?php
 
-  if($orserstatus=="Order Confirmed" || $orserstatus=="Cake being Prepared" || $orserstatus=="Cake Pickup" || $orserstatus=="" ){ ?>
+  if($orserstatus=="Đơn hàng đã được xác nhận" || $orserstatus=="Bánh đang được chuẩn bị" || $orserstatus=="Nhận bánh" || $orserstatus=="" ){ ?>
 
 
 <form name="submit" method="post"> 
@@ -257,11 +258,11 @@ while ($row1 = mysqli_fetch_array($query)) {
     <th>Tình trạng đơn hàng:</th>
     <td>
    <select name="status" class="form-control wd-450" required="true" >
-     <option value="Order Confirmed" selected="true">Đơn hàng đã được xác nhận</option>
-          <option value="Order Cancelled">Đơn hàng đã bị hủy</option>
-     <option value="Cake being Prepared">Bánh đang được chuẩn bị</option>
-     <option value="Cake Pickup">Nhận bánh</option>
-     <option value="Cake Delivered">Bánh được giao</option>
+     <option value="Đơn hàng đã được xác nhận" selected="true">Đơn hàng đã được xác nhận</option>
+          <option value="Đơn hàng đã bị hủy">Đơn hàng đã bị hủy</option>
+     <option value="Bánh đang được chuẩn bị">Bánh đang được chuẩn bị</option>
+     <option value="Nhận bánh">Nhận bánh</option>
+     <option value="Bánh được giao">Bánh được giao</option>
    </select></td>
   </tr>
     <tr align="center">
