@@ -104,8 +104,7 @@ popUpWin = open(URLStr,'popUpWin', 'toolbar=no,location=no,directories=no,status
                     $userid= $_SESSION['fosuid'];
 $query = mysqli_query($con, "
     SELECT * FROM tblorderaddresses 
-    WHERE UserId='$userid' AND (OrderFinalStatus IS NULL OR OrderFinalStatus != 'Đơn hàng đã bị hủy')");
-
+    WHERE UserId='$userid'");
 
 $cnt=1;
               while($row=mysqli_fetch_array($query))
