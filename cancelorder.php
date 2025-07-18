@@ -44,11 +44,11 @@ $cnt=1;
 
 <table border="1"  cellpadding="10" style="border-collapse: collapse; border-spacing:0; width: 100%; text-align: center;">
   <tr align ="center">
-   <th colspan="4" >Cancel Order #<?php echo  $orderid;?></th> 
+   <th colspan="4" >Hủy đơn hàng #<?php echo  $orderid;?></th> 
   </tr>
   <tr>
-<th>Order Number </th>
-<th>Current Status </th>
+<th>Mã đơn hàng </th>
+<th>Tình trạng đơn hàng </th>
 </tr>
 <?php  
 while ($row=mysqli_fetch_array($query)) {
@@ -57,7 +57,7 @@ while ($row=mysqli_fetch_array($query)) {
   <td><?php  echo $orderid;?></td> 
    <td><?php  $status=$row['OrderFinalStatus'];
 if($status==""){
-  echo "Waiting for confirmation";
+  echo "Đang chờ xác nhận";
 } else { 
 echo $status;
 }
@@ -71,11 +71,11 @@ echo $status;
 <form method="post">
       <table>
         <tr>
-          <th>Reason for Cancel</th>
+          <th>Lý do hủy </th>
 <td>    <textarea name="restremark" placeholder="" rows="12" cols="50" class="form-control wd-450" required="true"></textarea></td>
         </tr>
 <tr>
-  <td colspan="2" align="center"><button type="submit" name="submit" class="btn btn-primary">Update order</button></td>
+  <td colspan="2" align="center"><button type="submit" name="submit" class="btn btn-primary">Cập nhật đơn hàng</button></td>
 
 </tr>
       </table>

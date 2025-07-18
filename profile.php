@@ -17,7 +17,7 @@ if(isset($_POST['submit']))
 
 
     if ($query) {
-    $msg="Your profile has been updated";
+    $msg="Hồ sơ của bạn đã được cập nhật!";
   }
   else
     {
@@ -83,50 +83,58 @@ if(isset($_POST['submit']))
         
         <!--================Contact Form Area =================-->
         <section class="contact_form_area p_100">
-        	<div class="container">
-        		<div class="main_title">
-					<h2>Hồ sơ người dùng</h2>
-					<h5>Cập nhật hồ sơ của bạn!!!.</h5>
-				</div>
-       			<div class="row">
-       				<div class="col-lg-7">  <p style="font-size:16px; color:red" align="center"> <?php if($msg){
-    echo $msg;
-  }  ?> </p>
-       					<form class="row contact_us_form" action="" method="post">
-                
-  <?php
-$pid=$_SESSION['fosuid'];
-$ret=mysqli_query($con,"select * from tbluser where ID='$pid'");
-$cnt=1;
-while ($row=mysqli_fetch_array($ret)) {
+<div class="container">
+    <div class="main_title text-center">
+        <h2>Hồ sơ người dùng</h2>
+        <h5>Cập nhật hồ sơ của bạn!!!</h5>
+    </div>
 
-?>  
-							<div class="form-group col-md-12">
-                <label style="color: royalblue;">Tên</label>
-								<input type="text" class="form-control" id="firstname" name="firstname" value="<?php  echo $row['FirstName'];?>" required="true">
-							</div>
-              <label style="color: royalblue;">Họ</label>
-							<div class="form-group col-md-12">
-								<input type="text" class="form-control" id="lastname" name="lastname" value="<?php  echo $row['LastName'];?>" required="true">
-							</div>
-							 <label style="color: royalblue;">Email</label>
-							<div class="form-group col-md-12">
-								<input type="email" class="form-control" id="email" name="email" value="<?php  echo $row['Email'];?>"  readonly="true">
-							</div>
-              <label style="color: royalblue;">Số điện thoại</label>
-              <div class="form-group col-md-12">
-                <input type="text" class="form-control" id="mobilenumber" name="mobilenumber" value="<?php  echo $row['MobileNumber'];?>"  readonly="true">
-              </div>
-              <label style="color: royalblue;">Ngày đăng ký</label>
-              <div class="form-group col-md-12">
-                <input type="text" class="form-control" id="regdate" name="regdate" value="<?php  echo $row['RegDate'];?>"  readonly="true">
-              </div>
-            <?php } ?>
-							<div class="form-group col-md-12">
-								<button type="submit" value="submit" name="submit" class="btn order_s_btn form-control">Nộp ngay bây giờ</button>
-							</div>
-						</form>
-       				</div>
+       			<div class="row">
+       				<div class="col-lg-6 offset-lg-3 col-md-8 offset-md-2">
+  <?php if($msg): ?>
+    <div class="alert alert-info text-center" role="alert">
+      <?php echo $msg; ?>
+    </div>
+  <?php endif; ?>
+
+  <form class="row contact_us_form" action="" method="post">
+    <?php
+    $pid=$_SESSION['fosuid'];
+    $ret=mysqli_query($con,"select * from tbluser where ID='$pid'");
+    while ($row=mysqli_fetch_array($ret)) {
+    ?>
+      <div class="form-group col-md-12">
+        <label style="color: royalblue;">Tên</label>
+        <input type="text" class="form-control" name="firstname" value="<?php echo $row['FirstName']; ?>" required>
+      </div>
+
+      <div class="form-group col-md-12">
+        <label style="color: royalblue;">Họ</label>
+        <input type="text" class="form-control" name="lastname" value="<?php echo $row['LastName']; ?>" required>
+      </div>
+
+      <div class="form-group col-md-12">
+        <label style="color: royalblue;">Email</label>
+        <input type="email" class="form-control" value="<?php echo $row['Email']; ?>" readonly>
+      </div>
+
+      <div class="form-group col-md-12">
+        <label style="color: royalblue;">Số điện thoại</label>
+        <input type="text" class="form-control" value="<?php echo $row['MobileNumber']; ?>" readonly>
+      </div>
+
+      <div class="form-group col-md-12">
+        <label style="color: royalblue;">Ngày đăng ký</label>
+        <input type="text" class="form-control" value="<?php echo $row['RegDate']; ?>" readonly>
+      </div>
+
+      <div class="form-group col-md-12 text-center">
+        <button type="submit" name="submit" class="btn order_s_btn form-control">Nộp ngay bây giờ</button>
+      </div>
+    <?php } ?>
+  </form>
+</div>
+
        				<div class="col-lg-4 offset-md-1">
        					<div class="contact_details">
        						<?php
@@ -136,15 +144,7 @@ $cnt=1;
 while ($row=mysqli_fetch_array($ret)) {
 
 ?>
-       						<div class="contact_d_item">
-       							<h3>Địa chỉ :</h3>
-       							<p><?php  echo $row['PageDescription'];?></p>
-       						</div>
-       						<div class="contact_d_item">
-       							<h5>Số điện thoại : <?php  echo $row['MobileNumber'];?></h5>
-       							<h5>Email : <?php  echo $row['Email'];?></h5>
-       						</div>
-       						
+	
        					</div>
        				</div><?php } ?>
        			</div>

@@ -13,6 +13,10 @@ if(isset($_POST['submit']))
     $itemname=$_POST['itemname'];
     $description=$_POST['description'];
     $quantity=$_POST['quantity'];
+      if (!ctype_digit($quantity) || intval($quantity) < 1) {
+        echo "<script>alert('Số lượng không hợp lệ. Chỉ được nhập số nguyên dương.');</script>";
+        exit();
+    }
      $price = preg_replace('/\D/', '', $_POST['price']);
     $weight=$_POST['weight'];
     $itempic=$_FILES["itemimages"]["name"];
@@ -123,9 +127,13 @@ else
                                             <div class="form-group row"><label class="col-sm-2 col-form-label">Hình ảnh</label>
                                                 <div class="col-sm-10"><input type="file" name="itemimages" required="true"></div>
                                             </div>
-                                            <div class="form-group row"><label class="col-sm-2 col-form-label">Số lượng:</label>
-                                                <div class="col-sm-10"><input type="text" class="form-control" name="quantity" required="true"></div>
+                                            <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label">Số lượng:</label>
+                                            <div class="col-sm-10">
+                                                <input type="number" class="form-control" name="quantity" min="1" required>
                                             </div>
+                                            </div>
+
                                             <div class="form-group row"><label class="col-sm-2 col-form-label">Trọng lượng bánh:</label>
                                                 <div class="col-sm-10"><select class="form-control white_bg" required="true" name="weight">
                                                     <option value="">Chọn trọng lượng</option>
@@ -286,6 +294,19 @@ else
                         }
                     });
        });
+       document.querySelector('[name="quantity"]').addEventListener('keypress', function (e) {
+        const char = String.fromCharCode(e.which);
+
+        // Nếu không phải số (0-9) thì chặn
+        if (!/[0-9]/.test(char)) {
+            e.preventDefault();
+        }
+        });
+
+        document.querySelector('[name="quantity"]').addEventListener('input', function (e) {
+        // Nếu người dùng dán (paste) ký tự lạ vào, ta cũng lọc lại
+        this.value = this.value.replace(/[^0-9]/g, '');
+        });
     </script>
 
 </body>

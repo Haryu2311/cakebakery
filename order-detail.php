@@ -159,7 +159,7 @@ while ($row=mysqli_fetch_array($query)) {
 <td>
   
   <?php 
-    echo $row['CashonDelivery'] == 1 ? 'Thanh toán khi nhận hàng (COD)' : 'Thanh toán online';
+    echo $row['CashonDelivery'] == 0 ? 'Thanh toán khi nhận hàng (COD)' : 'Thanh toán online';
   ?>
 </td>
 

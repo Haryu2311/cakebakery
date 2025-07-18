@@ -10,7 +10,7 @@ if(isset($_GET['delid']))
 {
 $rid=intval($_GET['delid']);
 $query=mysqli_query($con,"delete from tblorders where ID='$rid'");
- echo "<script>alert('Data deleted');</script>"; 
+ echo "<script>alert('Dữ liệu đã được xóa!');</script>"; 
   echo "<script>window.location.href = 'cart.php'</script>";     
 
 
@@ -34,7 +34,7 @@ $query.="insert into tblorderaddresses(UserId,Ordernumber,Flatnobuldngno,StreetN
 $result = mysqli_multi_query($con, $query);
 if ($result) {
 
-echo '<script>alert("Your order placed successfully. Order number is "+"'.$orderno.'")</script>';
+echo '<script>alert("Đơn hàng của bạn đã được đặt thành công. Mã đơn hàng là "+"'.$orderno.'")</script>';
 echo "<script>window.location.href='my-order.php'</script>";
 
 }
@@ -153,7 +153,7 @@ $cnt=$cnt+1;
 								</form>
 
 								<td><?php echo number_format($total, 0, ',', '.'); ?> VNĐ</td>
-								<td><a href="cart.php?delid=<?php echo $row['ID'];?>" onclick="return confirm('Do you really want to Delete ?');"><i class="fa fa-trash fa-delete" aria-hidden="true"></i></a></td>
+								<td><a href="cart.php?delid=<?php echo $row['ID'];?>" onclick="return confirm('Bạn thật sự muốn xóa?');"><i class="fa fa-trash fa-delete" aria-hidden="true"></i></a></td>
 							</tr><?php $cnt++; } }?>
 							<tr>
 								<td>

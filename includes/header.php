@@ -24,7 +24,7 @@ $num=mysqli_num_rows($ret1);
 ?>
                     <li><a href="cart.php"><i class="lnr lnr-cart"><strong><?php echo $num;?></strong></i></a></li>
                     <li><a href="search-cake.php"><i class="fa fa-search"></i></a></li>
-                    <li style="color: white;"><a href="admin/index.php">Quản trị </a></li>
+                    <!-- <li style="color: white;"><a href="admin/index.php">Quản trị </a></li> -->
                     </ul>
                 </div>
             </div>

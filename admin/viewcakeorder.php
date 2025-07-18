@@ -211,7 +211,7 @@ while ($row1 = mysqli_fetch_array($query)) {
   <td><?php echo $row1['ItemName']; ?></td>
 <td>
   <?php 
-    echo $row1['CashonDelivery'] == 1 ? 'Thanh toán khi nhận hàng (COD)' : 'Thanh toán online'; 
+    echo $row1['CashonDelivery'] == 0 ? 'Thanh toán khi nhận hàng (COD)' : 'Thanh toán online'; 
   ?>
 </td>
 

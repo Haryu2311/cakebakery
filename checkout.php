@@ -55,9 +55,6 @@ else
 }
 
 }
-
-
-
     ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -216,6 +213,27 @@ else
                 </div>
             </div>
         </section>
+        <!-- Modal xác nhận VNPAY -->
+<div class="modal fade" id="vnpayConfirmModal" tabindex="-1" role="dialog" aria-labelledby="vnpayConfirmLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Xác nhận thanh toán VNPAY</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Đóng">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Bạn có chắc chắn muốn thanh toán qua VNPAY không? Bạn sẽ được chuyển đến trang thanh toán của VNPAY sau khi xác nhận.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+        <button type="submit" class="btn btn-primary" id="confirmVnpayBtn">Xác nhận</button>
+      </div>
+    </div>
+  </div>
+</div>
+
         <!--================End Billing Details Area =================-->   
         
        <?php include_once('includes/footer.php');?>
@@ -247,9 +265,23 @@ else
         <script src="vendors/nice-select/js/jquery.nice-select.min.js"></script>
         <script src="vendors/jquery-ui/jquery-ui.min.js"></script>
         <script src="vendors/lightbox/simpleLightbox.min.js"></script>
-        
-        
-        
+<script>
+document.querySelector("form#contactForm").addEventListener("submit", function (e) {
+    const cod = document.querySelector('input[name="cod"]:checked').value;
+
+    // Nếu là VNPAY (giá trị == 1) thì chặn form lại và hiển thị modal
+    if (cod === "1") {
+        e.preventDefault(); // Ngăn submit mặc định
+        $('#vnpayConfirmModal').modal('show'); // Hiển thị modal xác nhận
+    }
+});
+
+// Khi bấm nút "Xác nhận" trong modal thì submit form thủ công
+document.getElementById("confirmVnpayBtn").addEventListener("click", function () {
+    document.getElementById("contactForm").submit();
+});
+</script>
+
         <script src="js/theme.js"></script>
     </body>
 

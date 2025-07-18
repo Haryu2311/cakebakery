@@ -56,7 +56,7 @@ if (strlen($_SESSION['fosaid']==0)) {
                 </tr>
               </thead>
               <?php
-$ret=mysqli_query($con,"select * from tblorderaddresses where OrderFinalStatus='Order Confirmed'");
+$ret=mysqli_query($con,"select * from tblorderaddresses where OrderFinalStatus='Đơn hàng đã được xác nhận'");
 $cnt=1;
 while ($row=mysqli_fetch_array($ret)) {
 

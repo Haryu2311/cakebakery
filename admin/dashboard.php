@@ -64,10 +64,10 @@ $notconfirmedorder=mysqli_num_rows($query1);
                     <div class="col-lg-4">
                         <div class="ibox ">
                             <div class="ibox-title">
-                                <?php $query2=mysqli_query($con,"Select * from  tblorderaddresses where OrderFinalStatus ='Đơn hàng đã xác nhận'");
+                                <?php $query2=mysqli_query($con,"Select * from  tblorderaddresses where OrderFinalStatus ='Đơn hàng đã được xác nhận'");
 $conforder=mysqli_num_rows($query2);
 ?>
-      <a class="text-muted text-uppercase m-b-20" href="confirmed-order.php" style="font-size: 20px"><strong>Đơn hàng đã xác nhận</strong></a>                          
+      <a class="text-muted text-uppercase m-b-20" href="confirmed-order.php" style="font-size: 20px"><strong>Đơn hàng đã được xác nhận</strong></a>                          
                                 
                             </div>
                             <div class="ibox-content">

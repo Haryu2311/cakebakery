@@ -22,7 +22,7 @@ if(isset($_POST['submit']))
    
 
     
-    echo '<script>alert("Cake detail has been updated")</script>';
+    echo '<script>alert("Bánh đã cập nhật thành công!")</script>';
   }
   else
     {
@@ -63,7 +63,7 @@ if(isset($_POST['submit']))
         </div>
             <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-10">
-                <h2>Cake</h2>
+                <h2>Chỉnh sửa bánh</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
                         <a href="dashboard.php">Trang chủ</a>
@@ -115,12 +115,22 @@ while ($row=mysqli_fetch_array($ret)) {
                                                 <div class="col-sm-10"><img src="itemimages/<?php echo $row['Image'];?>" width="200" height="150" value="<?php  echo $row['Image'];?>"><a href="changeimage.php?editid=<?php echo $row['ID'];?>">Edit Image</a> </div>
                                             </div>
 
-                                            <div class="form-group row"><label class="col-sm-2 col-form-label">Số lượng:</label>
-                                                <div class="col-sm-10"><input type="text" class="form-control" name="quantity" value="<?php  echo $row['ItemQty'];?>"></div>
-                                            </div>
-                                            <div class="form-group row"><label class="col-sm-2 col-form-label">Giá:</label>
-                                                <div class="col-sm-10"><input type="text" class="form-control" name="price" value="<?php  echo $row['ItemPrice'];?>"></div>
-                                            </div>
+                                            <div class="form-group row">
+    <label class="col-sm-2 col-form-label">Số lượng:</label>
+    <div class="col-sm-10">
+        <input type="number" class="form-control" name="quantity" min="1" required>
+    </div>
+</div>
+                                            <div class="form-group row">
+    <label class="col-sm-2 col-form-label">Giá:</label>
+    <div class="col-sm-10">
+        <!-- Hiển thị cho người dùng -->
+        <input type="text" id="price_display" class="form-control" required>
+
+        <!-- Input ẩn chứa giá trị thực để gửi về PHP -->
+        <input type="hidden" id="price_real" name="price">
+    </div>
+</div>
                                             <div class="form-group row"><label class="col-sm-2 col-form-label">Khối lượng:</label>
                                                 <div class="col-sm-10">
 <select name="weight" class="form-control white_bg">
@@ -199,6 +209,33 @@ $cnt=$cnt+1;
 
 
     <script>
+// Xử lý giá: hiển thị có dấu chấm, gửi giá trị số thực
+const displayInput = document.getElementById('price_display');
+const realInput = document.getElementById('price_real');
+
+displayInput.addEventListener('input', function () {
+    // Loại bỏ mọi ký tự không phải số
+    const raw = this.value.replace(/\D/g, '');
+
+    // Gán vào input ẩn
+    realInput.value = raw;
+
+    // Hiển thị lại với dấu chấm phân tách hàng nghìn
+    this.value = raw.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+});
+
+// Chặn nhập ký tự lạ vào trường số lượng
+document.querySelector('[name="quantity"]').addEventListener('keypress', function (e) {
+    const char = String.fromCharCode(e.which);
+    if (!/[0-9]/.test(char)) {
+        e.preventDefault();
+    }
+});
+
+// Lọc lại khi dán dữ liệu vào trường số lượng
+document.querySelector('[name="quantity"]').addEventListener('input', function (e) {
+    this.value = this.value.replace(/[^0-9]/g, '');
+});
         $(document).ready(function(){
             $("#wizard").steps();
             $("#form").steps({
