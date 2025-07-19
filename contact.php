@@ -11,7 +11,7 @@ if(isset($_POST['submit']))
      
     $query=mysqli_query($con, "insert into tblcontact(Name,Email,Message) value('$name','$email','$message')");
     if ($query) {
-   echo "<script>alert('Your message was sent successfully!.');</script>";
+   echo "<script>alert('Tin nhắn của bạn đã được gửi thành công!.');</script>";
 echo "<script>window.location.href ='contact.php'</script>";
   }
   else
