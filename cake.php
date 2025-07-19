@@ -3,16 +3,24 @@ session_start();
 include_once('includes/dbconnection.php');
 $isLoyal = false;
 if (isset($_SESSION['fosuid'])) {
-    $uid = $_SESSION['fosuid'];
-    $rs = mysqli_query($con, "SELECT IsLoyalCustomer FROM tbluser WHERE ID = '$uid'");
-    $user = mysqli_fetch_assoc($rs);
-    if ($user && $user['IsLoyalCustomer'] == 1) {
-        $isLoyal = true;
+    $userid = isset($_SESSION['fosuid']) ? $_SESSION['fosuid'] : null;
+
+    $checkLoyal = mysqli_query($con, "SELECT IsLoyalCustomer FROM tbluser WHERE ID = '$userid'");
+    if ($checkLoyal && mysqli_num_rows($checkLoyal) > 0) {
+        $result = mysqli_fetch_assoc($checkLoyal);
+        if ($result['IsLoyalCustomer'] == 1) {
+            $isLoyal = true;
+        }
     }
 }
 
 if (isset($_POST['submit']) && isset($_POST['foodid'])) {
-    $userid = $_SESSION['fosuid'];
+    if (!isset($_SESSION['fosuid'])) {
+        echo "<script>alert('Vui lòng đăng nhập để thêm vào giỏ hàng.'); window.location='login.php';</script>";
+        exit();
+    }
+
+    $userid = isset($_SESSION['fosuid']) ? $_SESSION['fosuid'] : null;
     $foodid = intval($_POST['foodid']);
 
     // Lấy số lượng bánh gốc từ tblfood
@@ -68,7 +76,7 @@ if (isset($_POST['submit']) && isset($_POST['foodid'])) {
 
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:
-        <!--[if lt IE 9]>
+        [if lt IE 9]>
         <script src="https:
         <script src="https:
         <![endif]-->

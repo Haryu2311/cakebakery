@@ -136,13 +136,13 @@ while ($row=mysqli_fetch_array($ret)) {
 $price = $row['ItemPrice'];
 if ($isLoyal) {
     $discountPrice = $price * 0.9; // giảm 10%
-echo "<h3><del>" . number_format($price, 0, ',', '.') . " VNĐ</del><br><span style='color:red;'>" . number_format($discountPrice, 0, ',', '.') . " VNĐ</span></h4>";
+echo "<h3><del>" . number_format($price, 0, ',', '.') . " VNĐ</del><br><span style='color:red;'>" . number_format($discountPrice, 0, ',', '.') . " VNĐ</span></h3>";
 } else {
-    echo "<h3>" . number_format($price, 0, ',', '.') . " VNĐ</h4>";
+    echo "<h3>" . number_format($price, 0, ',', '.') . " VNĐ</h3>";
 }
 ?>
 								<h3><a href="cake-detail.php?fid=<?php echo $row['ID'];?>"><?php echo $row['ItemName'];?></a></h3>
-								<?php if($_SESSION['fosuid']==""){?>
+<?php if (!isset($_SESSION['fosuid']) || $_SESSION['fosuid'] == "") { ?>
        								<a href="login.php" class="pest_btn">Thêm vào giỏ hàng</a>
 <?php } else {?>
     <form method="post"> 
