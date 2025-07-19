@@ -7,7 +7,7 @@ if(isset($_POST['submit']))
   {
     $contactno=$_POST['contactno'];
     $email=$_POST['email'];
-$password=md5($_POST['newpassword']);
+$password=($_POST['newpassword']);
         $query=mysqli_query($con,"select ID from tbluser where  Email='$email' and MobileNumber='$contactno' ");
         
     $ret=mysqli_num_rows($query);

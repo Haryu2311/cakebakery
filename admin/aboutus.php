@@ -13,7 +13,7 @@ $pagedes=$_POST['pagedes'];
      $query=mysqli_query($con,"update tblpage set PageTitle='$pagetitle',PageDescription='$pagedes' where  PageType='aboutus'");
     if ($query) {
  
-    echo '<script>alert("About Us has been updated.")</script>';
+    echo '<script>alert("Giới thiệu đã được cập nhật!")</script>';
   }
   else
     {

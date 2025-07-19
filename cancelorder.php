@@ -2,29 +2,33 @@
 session_start();
 error_reporting(0);
 include_once('includes/dbconnection.php');
-if(isset($_POST['submit']))
-  {
-    
-   $orderid=$_GET['oid'];
-    $ressta="Đơn hàng đã bị hủy";
-    $remark=$_POST['restremark'];
-    $canclbyuser=1;
- 
-    
-    $query=mysqli_query($con,"insert into tbltracking(OrderId,remark,status,OrderCanclledByUser) value('$orderid','$remark','$ressta','$canclbyuser')"); 
-   $query=mysqli_query($con, "update   tblorderaddresses set OrderFinalStatus='$ressta' where Ordernumber='$orderid'");
-    if ($query) {
-    $msg="Order Has been updated";
-  }
-  else
-    {
-      $msg="Something Went Wrong. Please try again";
-    }
 
-  
+if (!isset($_GET['oid'])) {
+    echo "<p style='color:red;'>Mã đơn hàng không hợp lệ.</p>";
+    exit();
 }
 
- ?>
+if (isset($_POST['submit'])) {
+    $orderid = $_GET['oid'];
+    $ressta = "Đơn hàng đã bị hủy";
+    $remark = $_POST['restremark'];
+    $canclbyuser = 1;
+
+    // Ghi vào bảng theo dõi đơn hàng
+    $insertTracking = mysqli_query($con, "INSERT INTO tblfoodtracking(OrderId, remark, status, StatusDate, OrderCanclledByUser) 
+        VALUES ('$orderid', '$remark', '$ressta', NOW(), '$canclbyuser')");
+
+    // Cập nhật trạng thái cuối cùng của đơn hàng
+    $updateOrder = mysqli_query($con, "UPDATE tblorderaddresses SET OrderFinalStatus='$ressta' WHERE Ordernumber='$orderid'");
+
+    if ($insertTracking && $updateOrder) {
+        $msg = "Đơn hàng đã được hủy thành công.";
+    } else {
+        $msg = "Có lỗi xảy ra. Vui lòng thử lại.";
+    }
+}
+?>
+
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">

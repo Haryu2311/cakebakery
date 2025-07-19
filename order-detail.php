@@ -103,7 +103,7 @@ while($result=mysqli_fetch_array($ret)) {
 <p style="color:#000"><b>Đặt hàng #</b><?php echo $oid?></p>
 <p style="color:#000"><b>Ngày đặt hàng : </b><?php echo $od=$result['OrderTime'];?></p>
 <p style="color:#000"><b>Trạng thái đơn hàng :</b> <?php if($result['OrderFinalStatus']==""){
-    echo "Not Accpet Yet";
+    echo "Đang chờ xác nhận";
 } else {
 echo $result['OrderFinalStatus'];
 }?> &nbsp;
@@ -117,7 +117,7 @@ echo $result['OrderFinalStatus'];
 					<?php 
                                 $userid= $_SESSION['fosuid'];
 $query=mysqli_query($con,"
-    SELECT tblfood.Image, tblfood.ItemName, tblfood.Weight, tblfood.ItemPrice,
+    SELECT tblfood.Image, tblfood.ItemName, tblorders.FoodQty, tblfood.Weight, tblfood.ItemPrice,
            tblorders.ItemQty, tblorders.FoodId, tblorders.OrderNumber, tblorders.CashonDelivery
     FROM tblorders
     JOIN tblfood ON tblfood.ID = tblorders.FoodId
@@ -128,20 +128,20 @@ if($num>0){
     $cnt=1;
 
 ?>
-                    <table class="table" style="padding-top: 20px;">
-
-						<thead>
-							<tr>
-                                <th>#</th>
-                                <th>Mã đơn hàng</th>
-								<th>Hình ảnh</th>
-								<th>Tên mặt hàng</th>
-								<th>Cân nặng</th>
-                                <th>Số lượng</th>
-                                <th>Loại giao hàng</th>
-								<th>Giá</th><tr>
-								
-						</thead>
+<table class="table table-bordered text-center align-middle" style="table-layout: fixed; width: 100%; padding-top: 20px;">
+<thead>
+  <tr>
+    <th style="width: 10%;">#</th>
+    <th style="width: 12%;">Mã đơn hàng</th>
+    <th style="width: 12%;">Hình ảnh</th>
+    <th style="width: 12%;">Tên mặt hàng</th>
+    <th style="width: 10%;">Số bánh</th>
+    <th style="width: 10%;">Cân nặng</th>
+    <th style="width: 8%;">Số lượng</th>
+    <th style="width: 15%;">Loại giao hàng</th>
+    <th style="width: 15%;">Giá</th>
+  </tr>
+</thead>
 						<tbody>
 							
 				 <?php   
@@ -154,7 +154,34 @@ while ($row=mysqli_fetch_array($query)) {
 <td>
 <img class="b-goods-f__img img-scale" src="admin/itemimages/<?php echo $row['Image'];?>" alt="<?php echo $row['Image'];?>" width='100' height='100'></td>
 <td><?php echo $row['ItemName'];?></td>  
-<td><?php echo $row['Weight'];?>  </td> 
+<td><?php echo $row['FoodQty'] * $row['ItemQty']; ?> chiếc</td>
+
+<td>
+    <?php
+        // Chuyển weight dạng chuỗi sang số gram
+        $weightString = $row['Weight']; // Ví dụ "1.5 kg", "500 gm"
+        $weightGrams = 0;
+
+        if (strpos($weightString, 'kg') !== false) {
+            $value = floatval(str_replace(' kg', '', $weightString));
+            $weightGrams = $value * 1000;
+        } elseif (strpos($weightString, 'gm') !== false) {
+            $value = floatval(str_replace(' gm', '', $weightString));
+            $weightGrams = $value;
+        }
+
+        // Tính tổng khối lượng theo số lượng
+        $totalGrams = $weightGrams * $row['ItemQty'];
+
+        // Hiển thị khối lượng tổng sau khi nhân số lượng
+        if ($totalGrams >= 1000) {
+            echo rtrim(rtrim(number_format($totalGrams / 1000, 2, '.', ''), '0'), '.') . " kg";
+        } else {
+            echo number_format($totalGrams, 0) . " g";
+        }
+    ?>
+</td>
+
 <td><?php echo $row['ItemQty']; ?></td>
 <td>
   
@@ -181,7 +208,7 @@ while ($row=mysqli_fetch_array($query)) {
 <?php } ?>
 
 <tr>
-  <th colspan="7" style="text-align: center;">Tổng cộng</th>    
+  <th colspan="8" style="text-align: center;">Tổng cộng</th>    
   <th><?php echo number_format($grandtotal, 0, ',', '.'); ?> VNĐ</th>
 </tr>
 

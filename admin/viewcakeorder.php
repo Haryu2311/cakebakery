@@ -180,7 +180,7 @@ if($row['OrderFinalStatus']=="Đơn hàng đã bị hủy")
      </div>
 <div class="col-6" style="margin-top:2%">
   <?php  
-$query=mysqli_query($con,"select tblfood.Image,tblfood.ItemName,tblfood.ItemDes,tblfood.ItemPrice,tblorders.ItemQty,tblorders.FoodId,tblorders.CashonDelivery from tblorders join tblfood on tblfood.ID=tblorders.FoodId where tblorders.IsOrderPlaced=1 and tblorders.OrderNumber='$oid'");
+$query=mysqli_query($con,"select tblfood.Image,tblfood.ItemName,tblorders.FoodQty, tblfood.ItemDes,tblfood.ItemPrice,tblorders.ItemQty,tblfood.Weight,tblorders.FoodId,tblorders.CashonDelivery from tblorders join tblfood on tblfood.ID=tblorders.FoodId where tblorders.IsOrderPlaced=1 and tblorders.OrderNumber='$oid'");
 $num=mysqli_num_rows($query);
 $cnt=1;?>
 <table border="1" class="table table-bordered mg-b-0">
@@ -192,7 +192,9 @@ $cnt=1;?>
     <th>Hình ảnh bánh</th>
     <th>Tên bánh</th>
     <th>Loại giao hàng</th>
+    <th>Số bánh</th>
     <th>Số lượng</th>
+    <th>Khối lượng</th>
     <th>Giá</th>
 </tr>
 
@@ -214,18 +216,44 @@ while ($row1 = mysqli_fetch_array($query)) {
     echo $row1['CashonDelivery'] == 0 ? 'Thanh toán khi nhận hàng (COD)' : 'Thanh toán online'; 
   ?>
 </td>
-
+<td><?php echo $row1['FoodQty'] * $row1['ItemQty']; ?> chiếc</td>
   <td><?php echo $row1['ItemQty']; ?></td>
+<td>
+  <?php
+      // Chuyển weight dạng chuỗi sang số gram
+      $weightString = $row1['Weight']; // Ví dụ "1.5 kg", "500 gm"
+      $weightGrams = 0;
+
+      if (strpos($weightString, 'kg') !== false) {
+          $value = floatval(str_replace(' kg', '', $weightString));
+          $weightGrams = $value * 1000;
+      } elseif (strpos($weightString, 'gm') !== false) {
+          $value = floatval(str_replace(' gm', '', $weightString));
+          $weightGrams = $value;
+      }
+
+      // Tính tổng khối lượng theo số lượng
+      $totalGrams = $weightGrams * $row1['ItemQty'];
+
+      // Hiển thị khối lượng tổng sau khi nhân số lượng
+      if ($totalGrams >= 1000) {
+          echo rtrim(rtrim(number_format($totalGrams / 1000, 2, '.', ''), '0'), '.') . " kg";
+      } else {
+          echo number_format($totalGrams, 0) . " g";
+      }
+  ?>
+</td>
+
+
   <td><?php echo number_format($itemTotal, 0, ',', '.'); ?> VNĐ</td>
 </tr>
-
 <?php 
   $cnt++;
 } 
 ?>
 
 <tr>
-  <th colspan="5" style="text-align:center">Tổng cộng</th>
+  <th colspan="7" style="text-align:center">Tổng cộng</th>
   <td><?php echo number_format($grandtotal, 0, ',', '.'); ?> VNĐ</td>
 </tr>
 </table>
@@ -278,43 +306,44 @@ while ($row1 = mysqli_fetch_array($query)) {
 <?php } ?>
 
 
-<?php  if($orserstatus!=""){
-$ret=mysqli_query($con,"select tblfoodtracking.OrderCanclledByUser,tblfoodtracking.remark,tblfoodtracking.status as fstatus,tblfoodtracking.StatusDate from tblfoodtracking where tblfoodtracking.OrderId ='$oid'");
-$cnt=1;
-
- $cancelledby=$row['OrderCanclledByUser'];
- ?>
-<table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+<?php  
+if ($orserstatus != "") {
+  $ret = mysqli_query($con, "SELECT OrderCanclledByUser, remark, status AS fstatus, StatusDate FROM tblfoodtracking WHERE OrderId ='$oid'");
+  $cnt = 1;
+?>
+<table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; width: 100%;">
   <tr align="center">
-   <th colspan="4" >Lịch sử theo dõi đơn hàng</th> 
+    <th colspan="4">Lịch sử theo dõi đơn hàng</th> 
   </tr>
   <tr>
     <th>#</th>
-<th>Nhận xét</th>
-<th>Trạng thái</th>
-<th>Thời gian</th>
-</tr>
-<?php  
-while ($row=mysqli_fetch_array($ret)) { 
+    <th>Nhận xét</th>
+    <th>Trạng thái</th>
+    <th>Thời gian</th>
+  </tr>
+  <?php  
+  while ($row = mysqli_fetch_array($ret)) { 
+    $cancelledby = $row['OrderCanclledByUser'];
   ?>
-<tr>
-  <td><?php echo $cnt;?></td>
- <td><?php  echo $row['remark'];?></td> 
-  <td><?php  echo $row['fstatus'];
-if($cancelledby==1){
-echo "("."bởi người dùng".")";
-} else {
-
-echo "("."bởi nhà hàng".")";
-}
-
-  ?></td> 
-   <td><?php  echo $row['StatusDate'];?></td> 
-</tr>
-<?php $cnt=$cnt+1;} ?>
+  <tr>
+    <td><?php echo $cnt; ?></td>
+    <td><?php echo $row['remark']; ?></td> 
+    <td>
+      <?php 
+        echo $row['fstatus'];
+        if ($cancelledby == 1) {
+          echo " (bởi người dùng)";
+        } elseif ($cancelledby == 2) {
+          echo " (bởi nhà hàng)";
+        }
+      ?>
+    </td> 
+    <td><?php echo $row['StatusDate']; ?></td> 
+  </tr>
+  <?php $cnt++; } ?>
 </table>
-<?php  }  
-?>
+<?php } ?>
+
                         </div>
                     </div>
                     </div>

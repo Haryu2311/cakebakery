@@ -4,10 +4,10 @@ error_reporting(0);
 include('includes/dbconnection.php');
 $msg = "";
 if (isset($_POST['submit'])) {
-    $fname = mysqli_real_escape_string($con, $_POST['firstname']);
-    $lname = mysqli_real_escape_string($con, $_POST['lastname']);
-    $contno = mysqli_real_escape_string($con, $_POST['mobilenumber']);
-    $email = mysqli_real_escape_string($con, $_POST['email']);
+    $fname = isset($_POST['firstname']) ? $_POST['firstname'] : '';
+$lname = isset($_POST['lastname']) ? $_POST['lastname'] : '';
+$contno = isset($_POST['mobilenumber']) ? $_POST['mobilenumber'] : '';
+$email = isset($_POST['email']) ? $_POST['email'] : '';
     $password = mysqli_real_escape_string($con, $_POST['password']);
     $repeatpassword = mysqli_real_escape_string($con, $_POST['repeatpassword']);
 
@@ -16,20 +16,30 @@ if (isset($_POST['submit'])) {
         $msg = "Mật khẩu và mật khẩu nhập lại không khớp.";
     } else {
 
-        $ret = mysqli_query($con, "SELECT Email FROM tbluser WHERE Email='$email' OR MobileNumber='$contno'");
-        if (mysqli_fetch_array($ret)) {
-            $msg = "Email hoặc số điện thoại đã được đăng ký.";
-        } else {
+// Kiểm tra email đã tồn tại ở user hoặc admin
+$email_user = mysqli_query($con, "SELECT ID FROM tbluser WHERE Email='$email'");
+$email_admin = mysqli_query($con, "SELECT ID FROM tbladmin WHERE Email='$email'");
 
-            $query = mysqli_query($con, "INSERT INTO tbluser(FirstName, LastName, MobileNumber, Email, Password) 
-                VALUES('$fname', '$lname', '$contno', '$email', '$password')");
+// Kiểm tra số điện thoại đã tồn tại ở user hoặc admin
+$phone_user = mysqli_query($con, "SELECT ID FROM tbluser WHERE MobileNumber='$contno'");
+$phone_admin = mysqli_query($con, "SELECT ID FROM tbladmin WHERE MobileNumber='$contno'");
 
-            if ($query) {
-                $msg = "Đăng ký thành công!";
-            } else {
-                $msg = "Đã xảy ra lỗi. Vui lòng thử lại.";
-            }
-        }
+if (mysqli_num_rows($email_user) > 0 || mysqli_num_rows($email_admin) > 0) {
+    $msg = "Email đã được đăng ký.";
+} elseif (mysqli_num_rows($phone_user) > 0 || mysqli_num_rows($phone_admin) > 0) {
+    $msg = "Số điện thoại đã được đăng ký.";
+} else {
+    // Không trùng, tiến hành insert
+    $query = mysqli_query($con, "INSERT INTO tbluser(FirstName, LastName, MobileNumber, Email, Password) 
+        VALUES('$fname', '$lname', '$contno', '$email', '$password')");
+
+    if ($query) {
+        $msg = "Đăng ký thành công!";
+    } else {
+        $msg = "Đã xảy ra lỗi. Vui lòng thử lại.";
+    }
+}
+
     }
 }
 ?>
@@ -72,7 +82,7 @@ function checkpass()
 {
 if(document.signup.password.value!=document.signup.repeatpassword.value)
 {
-alert('Password and Repeat Password field does not match');
+alert('Trường Mật khẩu và Mật khẩu lặp lại không khớp');
 document.signup.repeatpassword.focus(); //Đặt con trỏ chuột (focus) vào trường nhập lại mật khẩu để người dùng dễ dàng sửa lại.
 return false;
 }
@@ -112,26 +122,29 @@ return true;
                 <p style="font-size:16px; color:red" align="center"> <?php if($msg){
     echo $msg;
   }  ?> </p>
-       					<form class="row contact_us_form"action="" name="signup" method="post" onsubmit="return checkpass();">
-							<div class="form-group col-md-6">
-								<input type="text" class="form-control" name="firstname" required="true" placeholder="Tên" required="true">
-							</div>
-              <div class="form-group col-md-6">
-                <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Họ" required="true">
-              </div>
-              <div class="form-group col-md-6">
-                <input type="text" class="form-control" id="mobilenumber" name="mobilenumber" required="true" maxlength="10" pattern="[0-9]{10}" placeholder="Số điện thoại" required="true">
-              </div>
-							<div class="form-group col-md-6">
-								<input type="email" class="form-control" id="email" name="email" placeholder="Địa chỉ email" required="true">
-							</div>
-							
-              <div class="form-group col-md-6">
-                <input type="password" class="form-control" id="password" name="password" placeholder="Mật khẩu" required="true">
-              </div>
-              <div class="form-group col-md-6">
-                  <input type="password" class="form-control" name="repeatpassword" required placeholder="Nhập lại mật khẩu">
-              </div>
+                <form class="row contact_us_form" action="" name="signup" method="post" onsubmit="return checkpass();">
+                <div class="form-group col-md-6">
+                    <input type="text" class="form-control" name="firstname" required="true" placeholder="Tên" value="<?php echo htmlentities($fname); ?>">
+                </div>
+                
+                <div class="form-group col-md-6">
+                    <input type="text" class="form-control" id="lastname" name="lastname" required="true" placeholder="Họ" value="<?php echo htmlentities($lname); ?>">
+                </div>
+                
+                <div class="form-group col-md-6">
+                    <input type="text" class="form-control" id="mobilenumber" name="mobilenumber" required="true" maxlength="10" pattern="[0-9]{10}" placeholder="Số điện thoại" value="<?php echo htmlentities($contno); ?>">
+                </div>
+                
+                <div class="form-group col-md-6">
+                    <input type="email" class="form-control" id="email" name="email" required="true" placeholder="Địa chỉ email" value="<?php echo htmlentities($email); ?>">
+                </div>
+
+                <div class="form-group col-md-6">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Mật khẩu" required="true">
+                </div>
+                <div class="form-group col-md-6">
+                    <input type="password" class="form-control" name="repeatpassword" required placeholder="Nhập lại mật khẩu">
+                </div>
 							<div class="form-group col-md-12 d-flex justify-content-between align-items-center">
               <!-- Nút Xác nhận -->
               <button type="submit" value="submit" name="submit" class="btn order_s_btn" style="width:48%;">Xác nhận ngay</button>
@@ -206,5 +219,4 @@ while ($row=mysqli_fetch_array($ret)) {
         
         <script src="js/theme.js"></script>
     </body>
-
 </html>

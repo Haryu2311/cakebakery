@@ -2,14 +2,18 @@
 session_start();
 require_once("./config.php");
 
-// Lấy thông tin từ session
-$amount = isset($_SESSION['money']) ? $_SESSION['money'] : 0;
-$orderid = $_SESSION['orderid']; // Được tạo ở checkout.php
+// Kiểm tra session hợp lệ
+if (!isset($_SESSION['orderid']) || !isset($_SESSION['money'])) {
+    echo "Thiếu dữ liệu!";
+    exit();
+}
+
+$orderid = $_SESSION['orderid'];
+$amount = $_SESSION['money']; // ví dụ: 200000
 $orderInfo = "Thanh toán đơn hàng #" . $orderid;
 $orderType = "billpayment";
-$amount_vnp = $amount * 100; // Đơn vị VNPAY yêu cầu là x100
+$amount_vnp = $amount * 100;
 $locale = "vn";
-$bankCode = "";
 $ipAddr = $_SERVER['REMOTE_ADDR'];
 
 $inputData = array(
@@ -38,11 +42,10 @@ foreach ($inputData as $key => $value) {
     $i = 1;
 }
 
-$vnp_Url = $vnp_Url . "?" . $query;
 $vnp_SecureHash = hash_hmac('sha512', $hashdata, $vnp_HashSecret);
-$vnp_Url .= 'vnp_SecureHash=' . $vnp_SecureHash;
+$vnp_Url = $vnp_Url . "?" . $query . 'vnp_SecureHash=' . $vnp_SecureHash;
 
-// Redirect sang trang thanh toán của VNPAY
+// Redirect đến cổng thanh toán
 header('Location: ' . $vnp_Url);
 exit();
 ?>

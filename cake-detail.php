@@ -2,30 +2,35 @@
 session_start();
 include_once('includes/dbconnection.php');
 
-// Nếu đã đăng nhập và có click thêm giỏ
 if (isset($_POST['submit']) && isset($_POST['foodid'])) {
     $userid = $_SESSION['fosuid'];
     $foodid = intval($_POST['foodid']);
 
-    // Kiểm tra nếu sản phẩm đã có trong giỏ hàng chưa đặt hàng
+    // Lấy số lượng bánh gốc từ tblfood
+    $foodDataQuery = mysqli_query($con, "SELECT ItemQty FROM tblfood WHERE ID = '$foodid'");
+    $foodData = mysqli_fetch_assoc($foodDataQuery);
+    $foodQty = intval($foodData['ItemQty']); // số lượng bánh được giao theo quy định
+
+    // Kiểm tra xem món ăn đã có trong giỏ hàng chưa (chưa đặt hàng)
     $check = mysqli_query($con, "SELECT ID, ItemQty FROM tblorders WHERE UserId = '$userid' AND FoodId = '$foodid' AND IsOrderPlaced IS NULL");
-    
+
     if (mysqli_num_rows($check) > 0) {
-        // Nếu có, tăng số lượng lên 1
         $row = mysqli_fetch_assoc($check);
         $newQty = $row['ItemQty'] + 1;
         $orderId = $row['ID'];
-        mysqli_query($con, "UPDATE tblorders SET ItemQty = '$newQty' WHERE ID = '$orderId'");
+
+        // Cập nhật lại ItemQty và FoodQty
+        mysqli_query($con, "UPDATE tblorders SET ItemQty = '$newQty', FoodQty = '$foodQty' WHERE ID = '$orderId'");
     } else {
-        // Nếu chưa có, thêm sản phẩm mới vào giỏ
-        mysqli_query($con, "INSERT INTO tblorders(UserId, FoodId, ItemQty, IsOrderPlaced) VALUES('$userid', '$foodid', 1, NULL)");
+        // Chưa có trong giỏ, thêm mới
+        mysqli_query($con, "INSERT INTO tblorders(UserId, FoodId, ItemQty, FoodQty, IsOrderPlaced) VALUES('$userid', '$foodid', 1, '$foodQty', NULL)");
     }
 
-    // Chuyển hướng lại trang chi tiết sản phẩm (nếu muốn)
     echo "<script>alert('Đã thêm vào giỏ hàng!'); window.location='cart.php';</script>";
     exit();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -108,7 +113,7 @@ while ($row=mysqli_fetch_array($ret)) {
 								<div class="special_item_text">
 									<h4><?php echo $row['ItemName'];?></h4>
 									<p><strong>Loại bánh:</strong><?php echo $row['CategoryName'];?></p>
-									
+									<p><strong>Số lượng bánh nhận được:</strong> <?php echo $row['ItemQty']; ?> chiếc</p>
 									<p><strong>Giá:</strong> <?php echo number_format($row['ItemPrice'], 0, ',', '.'); ?> VNĐ</p>
 									<p><strong>Khối lượng:</strong> <?php echo $row['Weight'];?>.</p>
 									<p><strong>Thông tin sản phẩm:</strong> <?php echo $row['ItemDes'];?>.</p>
@@ -134,13 +139,6 @@ while ($row=mysqli_fetch_array($ret)) {
         <!--================Footer Area =================-->
       <?php include_once('includes/footer.php');?>
         <!--================End Footer Area =================-->
-        
-       
-        
-        
-        
-        
-        
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="js/jquery-3.2.1.min.js"></script>
         <!-- Include all compiled plugins (below), or include individual files as needed -->

@@ -9,16 +9,16 @@ if (strlen($_SESSION['fosaid']==0)) {
 if(isset($_POST['submit']))
 {
 $adminid=$_SESSION['fosaid'];
-$cpassword=md5($_POST['currentpassword']);
-$newpassword=md5($_POST['newpassword']);
+$cpassword=($_POST['currentpassword']);
+$newpassword=($_POST['newpassword']);
 $query=mysqli_query($con,"select ID from tbladmin where ID='$adminid' and   Password='$cpassword'");
 $row=mysqli_fetch_array($query);
 if($row>0){
 $ret=mysqli_query($con,"update tbladmin set Password='$newpassword' where ID='$adminid'");
-echo '<script>alert("Your password successully changed.")</script>';
+echo '<script>alert("Thay đổi mật khẩu thành công!")</script>';
 } else {
 
-echo '<script>alert("Your current password is wrong.")</script>';
+echo '<script>alert("Mật khẩu hiện tại của bạn không đúng!")</script>';
 }
 
 

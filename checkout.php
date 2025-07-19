@@ -49,7 +49,7 @@ else
     $_SESSION['landmark']=$_POST['landmark'];
     $_SESSION['city']=$_POST['city'];
     $_SESSION['cod']=$_POST['cod'];
-    $_SESSION['orderid'] = substr(rand(0, 99999999), 0, 8);
+    $_SESSION['orderid'] = mt_rand(100000000, 999999999);
  header("Location:http://localhost/cakebakerysystem/vnpay.php");
 
 }
@@ -92,8 +92,7 @@ else
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
     </head>
-    <body>
-        
+    <body>      
         <!--================Main Header Area =================-->
 		<?php include_once('includes/header.php');?>
         <!--================End Main Header Area =================-->
@@ -115,7 +114,6 @@ else
         <!--================Billing Details Area =================-->    
         <section class="billing_details_area p_100">
             <div class="container">
-
                 <div class="row">
                 	<div class="col-lg-7">
                	    	<div class="main_title">
@@ -144,52 +142,48 @@ else
 								    <label for="city">Thành phố *</label>
 									<input type="text" name="city" placeholder="Thành phố" class="form-control" equired="true">
 								</div>
-							
                 		</div>
                 	</div>
-                	<div class="col-lg-5">
-                		<div class="order_box_price">
-                			<div class="main_title">
-    <h2>Đơn hàng của bạn</h2>
-</div>
-<div class="payment_list">
-    <div class="price_single_cost">
+                    <div class="col-lg-5">
+                        <div class="order_box_price">
+                            <div class="main_title">
+                                <h2>Đơn hàng của bạn</h2>
+                            </div>
+                            <div class="payment_list">
+                                <div class="price_single_cost">
+                                    <h5>Sản phẩm <span>Tổng cộng</span></h5>
+                                    <?php 
+                                    $userid = $_SESSION['fosuid'];
+                                    $grandtotal = 0;
+                                    $query = mysqli_query($con, "SELECT tblfood.Image, tblfood.ItemName, tblfood.ItemDes, tblfood.Weight, tblfood.ItemPrice, tblorders.ItemQty, tblorders.FoodId 
+                                        FROM tblorders 
+                                        JOIN tblfood ON tblfood.ID = tblorders.FoodId 
+                                        WHERE tblorders.UserId = '$userid' AND tblorders.IsOrderPlaced IS NULL");
 
-        <h5>Sản phẩm <span>Tổng cộng</span></h5>
-        <?php 
-        $userid = $_SESSION['fosuid'];
-        $grandtotal = 0;
-        $query = mysqli_query($con, "SELECT tblfood.Image, tblfood.ItemName, tblfood.ItemDes, tblfood.Weight, tblfood.ItemPrice, tblorders.ItemQty, tblorders.FoodId 
-            FROM tblorders 
-            JOIN tblfood ON tblfood.ID = tblorders.FoodId 
-            WHERE tblorders.UserId = '$userid' AND tblorders.IsOrderPlaced IS NULL");
+                                    if (mysqli_num_rows($query) > 0) {
+                                        while ($row = mysqli_fetch_array($query)) {
+                                            $total = $row['ItemPrice'] * $row['ItemQty'];
+                                            $grandtotal += $total;
+                                    ?>
+                                    <h5>
+                                        <?php echo $row['ItemName']; ?> (x<?php echo $row['ItemQty']; ?>)
+                                        <span><?php echo number_format($total, 0, ',', '.'); ?> VNĐ</span>
+                                    </h5>
+                                    <?php 
+                                        } 
+                                    }
+                                    ?>
+                                    <h4>Tổng cộng <span><?php echo number_format($grandtotal, 0, ',', '.'); ?> VNĐ</span></h4>
+                                    <h5>Vận chuyển và xử lý <span class="text_f">Miễn phí vận chuyển</span></h5>
+                                    <h3>Tổng cộng <span><?php echo number_format($grandtotal, 0, ',', '.'); ?> VNĐ</span></h3>
 
-        if (mysqli_num_rows($query) > 0) {
-            while ($row = mysqli_fetch_array($query)) {
-                $total = $row['ItemPrice'] * $row['ItemQty'];
-                $grandtotal += $total;
-        ?>
-        <h5>
-            <?php echo $row['ItemName']; ?> (x<?php echo $row['ItemQty']; ?>)
-            <span><?php echo number_format($total, 0, ',', '.'); ?> VNĐ</span>
-        </h5>
-        <?php 
-            } 
-        }
-        ?>
-        <h4>Tổng cộng <span><?php echo number_format($grandtotal, 0, ',', '.'); ?> VNĐ</span></h4>
-        <h5>Vận chuyển và xử lý <span class="text_f">Miễn phí vận chuyển</span></h5>
-        <h3>Tổng cộng <span><?php echo number_format($grandtotal, 0, ',', '.'); ?> VNĐ</span></h3>
-
-        <?php $_SESSION['money'] = $grandtotal; ?>
-    </div>
-
-								<div id="accordion" class="accordion_area">
-									<div class="card">
-										<div class="card-header" id="headingOne">
-											
+                                    <?php $_SESSION['money'] = $grandtotal; ?>
+                                </div>
+                                <div id="accordion" class="accordion_area">
+                                    <div class="card">
+                                        <div class="card-header" id="headingOne">                                                      
                                             <h5 class="mb-0">
-												<div class="form-group">
+                                                <div class="form-group">
                                                     <label><strong>Phương thức thanh toán *</strong></label><br>
                                                     <div class="form-check">
                                                         <input class="form-check-input" type="radio" name="cod" id="vnpay" value="1" checked>
@@ -200,48 +194,41 @@ else
                                                         <label class="form-check-label" for="cod">Thanh toán khi nhận hàng (COD)</label>
                                                     </div>
                                                 </div>
-
-											</h5>
-										</div>
-										
-									</div>
-								</div>
-								<button type="submit" value="submit" name="placeorder" class="btn pest_btn">Đặt hàng</button></form>
-							</div>
-						</div>
-                	</div>
+                                            </h5>
+                                        </div>                                                    
+                                    </div>
+                                </div>
+                                    <button type="submit" value="submit" name="placeorder" class="btn pest_btn">Đặt hàng</button></form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
         <!-- Modal xác nhận VNPAY -->
-<div class="modal fade" id="vnpayConfirmModal" tabindex="-1" role="dialog" aria-labelledby="vnpayConfirmLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Xác nhận thanh toán VNPAY</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Đóng">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        Bạn có chắc chắn muốn thanh toán qua VNPAY không? Bạn sẽ được chuyển đến trang thanh toán của VNPAY sau khi xác nhận.
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-        <button type="submit" class="btn btn-primary" id="confirmVnpayBtn">Xác nhận</button>
-      </div>
-    </div>
-  </div>
-</div>
-
+            <div class="modal fade" id="vnpayConfirmModal" tabindex="-1" role="dialog" aria-labelledby="vnpayConfirmLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Xác nhận thanh toán VNPAY</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Đóng">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Bạn có chắc chắn muốn thanh toán qua VNPAY không? Bạn sẽ được chuyển đến trang thanh toán của VNPAY sau khi xác nhận.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary" id="confirmVnpayBtn">Xác nhận</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
+                                </form>
         <!--================End Billing Details Area =================-->   
         
        <?php include_once('includes/footer.php');?>
-        
-        
-        
-        
-        
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="js/jquery-3.2.1.min.js"></script>
         <!-- Include all compiled plugins (below), or include individual files as needed -->

@@ -107,6 +107,7 @@ echo "<script>window.location.href='my-order.php'</script>";
 							<tr>
 								<th scope="col">Ảnh</th>
 								<th scope="col">Tên sản phẩm</th>
+                                <th scope="col">Số bánh</th>
 								<th scope="col">Giá</th>
 								<th scope="col">Khối lượng</th>
 								<th scope="col">Số lượng</th>
@@ -118,7 +119,7 @@ echo "<script>window.location.href='my-order.php'</script>";
 							<tr>
 								<?php 
 $userid= $_SESSION['fosuid'];
-$query=mysqli_query($con,"select tblfood.Image,tblfood.ItemName,tblfood.ItemDes,tblfood.Weight,tblfood.ItemPrice,tblorders.ItemQty,tblorders.FoodId,tblorders.ID from tblorders join tblfood on tblfood.ID=tblorders.FoodId where tblorders.UserId='$userid' and tblorders.IsOrderPlaced is null");
+$query=mysqli_query($con,"select tblfood.Image,tblfood.ItemName,tblorders.FoodQty,tblfood.ItemDes,tblfood.Weight,tblfood.ItemPrice,tblorders.ItemQty,tblorders.FoodId,tblorders.ID from tblorders join tblfood on tblfood.ID=tblorders.FoodId where tblorders.UserId='$userid' and tblorders.IsOrderPlaced is null");
 $num=mysqli_num_rows($query);
 if($num>0){
 while ($row=mysqli_fetch_array($query)) {
@@ -129,7 +130,7 @@ while ($row=mysqli_fetch_array($query)) {
 									<img src="admin/itemimages/<?php echo $row['Image']?>" width="100" height="80" alt="<?php echo $row['ItemName']?>">
 								</td>
 								<td><?php echo $row['ItemName']?></td>
-								
+								<td><?php echo $row['FoodQty'] * $row['ItemQty']; ?> chiếc</td>
 								<td><?php echo number_format($total = $row['ItemPrice']* $row['ItemQty'], 0, ',', '.'); ?> VNĐ
 									<?php 
 $grandtotal+=$total;
@@ -138,9 +139,31 @@ $cnt=$cnt+1;
  ?>
 								</td>
 								<td>
-									<?php echo $row['Weight']?>
-									</select>
-								</td>
+    <?php
+        // Chuyển weight dạng chuỗi sang số gram
+        $weightString = $row['Weight']; // Ví dụ "1.5 kg", "500 gm"
+        $weightGrams = 0;
+
+        if (strpos($weightString, 'kg') !== false) {
+            $value = floatval(str_replace(' kg', '', $weightString));
+            $weightGrams = $value * 1000;
+        } elseif (strpos($weightString, 'gm') !== false) {
+            $value = floatval(str_replace(' gm', '', $weightString));
+            $weightGrams = $value;
+        }
+
+        // Tính tổng khối lượng theo số lượng
+        $totalGrams = $weightGrams * $row['ItemQty'];
+
+        // Hiển thị khối lượng tổng sau khi nhân số lượng
+        if ($totalGrams >= 1000) {
+            echo rtrim(rtrim(number_format($totalGrams / 1000, 2, '.', ''), '0'), '.') . " kg";
+        } else {
+            echo number_format($totalGrams, 0) . " g";
+        }
+    ?>
+</td>
+
 								<form method="post" action="update-cart.php">
 									<input type="hidden" name="order_id" value="<?php echo $row['ID']; ?>">
 									<td>

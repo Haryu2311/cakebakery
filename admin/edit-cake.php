@@ -15,9 +15,18 @@ if(isset($_POST['submit']))
     $description=$_POST['description'];
     $quantity=$_POST['quantity'];
     $price=$_POST['price'];
-    
+    $weight = $_POST['weight'];
+
    $itempic=$_FILES["itemimages"]["name"];
-    $query=mysqli_query($con, "update tblfood set CategoryName='$fcat',ItemName='$itemname',ItemPrice='$price',ItemDes='$description',ItemQty='$quantity' where ID='$cid'" );
+    $query = mysqli_query($con, "UPDATE tblfood 
+    SET CategoryName='$fcat',
+        ItemName='$itemname',
+        ItemPrice='$price',
+        ItemDes='$description',
+        ItemQty='$quantity',
+        Weight='$weight'
+    WHERE ID='$cid'");
+
     if ($query) {
    
 
@@ -133,17 +142,13 @@ while ($row=mysqli_fetch_array($ret)) {
 </div>
                                             <div class="form-group row"><label class="col-sm-2 col-form-label">Khối lượng:</label>
                                                 <div class="col-sm-10">
-<select name="weight" class="form-control white_bg">
-    <option value=""><?php  echo $row['Weight'];?></option>
-    <option value="500 gm">500 gm</option>
-                                                    <option value="1 kg">1 kg</option>
-                                                    <option value="1.5 kg">1.5 kg</option>
-                                                    <option value="2 kg">2 kg</option>
-                                                    <option value="2.5 kg">2.5 kg</option>
-                                                    <option value="3 kg">3 kg</option>
-                                                    <option value="3.5 kg">3.5 kg</option>
-                                                    <option value="4 kg">4 kg</option>
-</select>
+<input type="text" name="weight" class="form-control white_bg" 
+    value="<?php echo $row['Weight']; ?>" 
+    placeholder="VD: 500 gm hoặc 1.5 kg"
+    pattern="^\d+(\.\d+)?\s*(kg|gm)$" 
+    title="Chỉ được nhập như: 500 gm hoặc 1.5 kg"
+    required>
+
                                                     </div>
                                             </div>
                                            <div class="form-group row"><label class="col-sm-2 col-form-label">Loại bánh:</label>
@@ -206,6 +211,15 @@ $cnt=$cnt+1;
 
     <!-- Jquery Validate -->
     <script src="js/plugins/validate/jquery.validate.min.js"></script>
+<script>
+document.querySelector('input[name="weight"]').addEventListener('input', function (e) {
+    // Loại bỏ các ký tự không phải số, dấu chấm, khoảng trắng, k/g/m
+    this.value = this.value.replace(/[^0-9.kgmg\s]/gi, '');
+
+    // Chặn ký tự "-" luôn
+    this.value = this.value.replace(/-/g, '');
+});
+</script>
 
 
     <script>

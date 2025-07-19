@@ -12,7 +12,7 @@ if (isset($_GET['delfood'])) {
 $catid=intval($_GET['delfood']);    
 $query=mysqli_query($con,"delete from tblfood where ID='$catid'");
     if ($query) {
-     echo "<script>alert('Food item  deleted from menu');</script>";
+     echo "<script>alert('Bánh đã bị xóa');</script>";
      echo "<script>window.location.href='manage-cake.php'</script>";
   } else {
     echo "<script>alert('Something Went Wrong. Please try again.');</script>";

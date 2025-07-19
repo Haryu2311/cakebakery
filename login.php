@@ -3,23 +3,33 @@ session_start();
 error_reporting(0);
 include('includes/dbconnection.php');
 
-if(isset($_POST['login']))
-  {
-    $emailcon=$_POST['emailcont'];
-    $password=$_POST['password'];
-    $query=mysqli_query($con,"select ID from tbluser where  (Email='$emailcon' || MobileNumber='$emailcon') && Password='$password' ");
-    $ret=mysqli_fetch_array($query);
-    if($ret>0){
-      $_SESSION['fosuid']=$ret['ID'];
-     header('location:index.php');
-    }
-    else{
-    $msg="Invalid Details.";
-    }
-  }
-  ?>
+if (isset($_POST['login'])) {
+    $emailcon = $_POST['emailcont'];
+    $password = $_POST['password'];
 
+    // 1. Kiểm tra trong bảng admin
+    $adminQuery = mysqli_query($con, "SELECT ID FROM tbladmin WHERE (Email='$emailcon' || MobileNumber='$emailcon') AND Password='$password'");
+    $admin = mysqli_fetch_array($adminQuery);
 
+    if ($admin) {
+        $_SESSION['fosaid'] = $admin['ID']; // Lưu session admin
+        header('location:admin/dashboard.php');
+        exit();
+    }
+
+    // 2. Nếu không phải admin, kiểm tra user
+    $userQuery = mysqli_query($con, "SELECT ID FROM tbluser WHERE (Email='$emailcon' || MobileNumber='$emailcon') AND Password='$password'");
+    $user = mysqli_fetch_array($userQuery);
+
+    if ($user) {
+        $_SESSION['fosuid'] = $user['ID']; // Lưu session user
+        header('location:index.php');
+        exit();
+    } else {
+        $msg = "Thông tin đăng nhập không hợp lệ.";
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
     

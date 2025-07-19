@@ -14,7 +14,7 @@ if(isset($_POST['submit']))
     $query=mysqli_query($con, "update tblcategory set CategoryName ='$category' where ID=$eid");
     if ($query) {
    
-    echo '<script>alert("Category has been updated")</script>';
+    echo '<script>alert("Danh mục đã được cập nhật")</script>';
   }
   else
     {

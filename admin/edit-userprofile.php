@@ -17,7 +17,7 @@ if(isset($_POST['submit']))
 
 
     if ($query) {
-    echo '<script>alert("Profile has been updated")</script>';
+    echo '<script>alert("Hồ sơ đã được cập nhật")</script>';
   }
   else
     {

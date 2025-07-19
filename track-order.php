@@ -3,6 +3,11 @@ include('includes/dbconnection.php');
 session_start();
 error_reporting(0);
 
+// YÊU CẦU ĐĂNG NHẬP MỚI ĐƯỢC XEM TRANG NÀY
+if (!isset($_SESSION['fosuid']) || strlen($_SESSION['fosuid']) == 0) {
+    header('location:login.php');
+    exit();
+}
 
   ?>
 <!DOCTYPE html>

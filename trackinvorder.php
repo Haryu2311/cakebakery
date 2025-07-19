@@ -99,17 +99,17 @@ $cnt=1;
 </tr>
 <?php  
 while ($row=mysqli_fetch_array($ret)) { 
-  $cancelledby=$row['OrderCanclledByUser'];
+  $cancelledby=$row['Đơn hàng đã bị hủy'];
   ?>
 <tr>
   <td><?php echo $cnt;?></td>
  <td><?php  echo $row['remark'];?></td> 
   <td><?php  echo $row['bstatus']; 
 if($cancelledby==1){
-echo "("."by user".")";
+echo "("."bởi người dùng".")";
 } else {
 
-echo "("."by resturent".")";
+echo "("."bởi nhà hàng".")";
 }
 
   ?></td> 

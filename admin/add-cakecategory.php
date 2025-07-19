@@ -12,7 +12,7 @@ if(isset($_POST['submit']))
      
     $query=mysqli_query($con, "insert into tblcategory(CategoryName) value('$category')");
     if ($query) {
-    echo '<script>alert("Category Has been created")</script>';
+    echo '<script>alert("Danh mục tạo thành công!")</script>';
     echo "<script>window.location.href ='add-cakecategory.php'</script>";
   }
   else

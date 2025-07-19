@@ -22,7 +22,7 @@ $fnaobno=$_SESSION['flatbldgnumber'];
     $cod=$_SESSION['cod'];
     $userid=$_SESSION['fosuid']; 
 
-$orderno= mt_rand(100000000, 999999999);
+$orderno = $_SESSION['orderid'];
     $query="update tblorders set OrderNumber='$orderno',IsOrderPlaced='1',CashonDelivery='$cod' where UserId='$userid' and IsOrderPlaced is null;";
 echo $orderno ;
     $query.="insert into tblorderaddresses(UserId,Ordernumber,Flatnobuldngno,StreetName,Area,Landmark,City) values('$userid','$orderno','$fnaobno','$street','$area','$lndmark','$city');";

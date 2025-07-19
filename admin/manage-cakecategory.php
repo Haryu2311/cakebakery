@@ -11,7 +11,7 @@ if (isset($_GET['del'])) {
 $catid=intval($_GET['del']);    
 $query=mysqli_query($con,"delete from tblcategory where ID='$catid'");
     if ($query) {
-     echo "<script>alert('Category deleted');</script>";
+     echo "<script>alert('Đã xóa danh mục');</script>";
      echo "<script>window.location.href='manage-cakecategory.php'</script>";
   }
   else

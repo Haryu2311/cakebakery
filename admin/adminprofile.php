@@ -18,7 +18,7 @@ if(isset($_POST['submit']))
   
      $query=mysqli_query($con, "update tbladmin set AdminName ='$adminname', MobileNumber='$mobno', Email='$email' where ID='$adminid'");
     if ($query) {
-    echo '<script>alert("Profile has been updated")</script>';
+    echo '<script>alert("Hồ sơ đã được cập nhật")</script>';
   }
   else
     {

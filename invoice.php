@@ -32,7 +32,7 @@ window.print();
 <?php  
 $oid=$_GET['oid'];
 $query = mysqli_query($con,"
-SELECT tblorderaddresses.OrderTime, tblfood.Image, tblfood.ItemName, tblfood.Weight, tblfood.ItemPrice, 
+SELECT tblorderaddresses.OrderTime, tblfood.Image, tblfood.ItemName, tblfood.Weight, tblorders.FoodQty, tblfood.ItemPrice, 
 tblorders.FoodId, tblorders.OrderNumber, tblorders.ItemQty 
 FROM tblorders 
 JOIN tblfood ON tblfood.ID = tblorders.FoodId 
@@ -45,10 +45,10 @@ $cnt=1;
 
 <table border="1"  cellpadding="10" style="border-collapse: collapse; border-spacing:0; width: 100%; text-align: center;">
   <tr align="center">
-   <th colspan="7" >Hóa đơn của #<?php echo  $oid;?></th> 
+   <th colspan="8" >Hóa đơn của #<?php echo  $oid;?></th> 
   </tr>
   <tr>
-    <th colspan="3">Ngày tạo hóa đơn:</th>
+    <th colspan="4">Ngày tạo hóa đơn:</th>
 <td colspan="4">  </b> <?php echo $_GET['odate'];?></td>
   </tr>
   <tr>
@@ -57,19 +57,46 @@ $cnt=1;
                   <th>Ảnh</th>
   <th>Tên</th>
   <th>Khối lượng</th>
+  <th>Số bánh</th>
   <th>Giá</th>
   <th>Số lượng</th>
   <th>Tổng</th>
 </tr>
 <?php  
+$grandtotal = 0;
+$cnt = 1;
 while ($row = mysqli_fetch_array($query)) {
   $total = $row['ItemPrice'] * $row['ItemQty'];
+
+  // Lấy và tách khối lượng
+  $weightStr = trim($row['Weight']); // Ví dụ: "1.5 kg", "500 gm"
+  preg_match('/([\d\.]+)\s*(kg|gm)/i', $weightStr, $matches);
+  $weightValue = isset($matches[1]) ? floatval($matches[1]) : 0;
+  $weightUnit = isset($matches[2]) ? strtolower($matches[2]) : 'gm';
+
+  // Chuyển đổi về gram
+  $weightInGrams = ($weightUnit == 'kg') ? $weightValue * 1000 : $weightValue;
+
+  // Tổng khối lượng theo số lượng
+  $totalWeight = $weightInGrams * $row['ItemQty'];
 ?>
 <tr>
   <td><?php echo $cnt; ?></td>
   <td><img src="admin/itemimages/<?php echo $row['Image']; ?>" width="60" height="40" alt=""></td> 
   <td><?php echo $row['ItemName']; ?></td>   
-  <td><?php echo $row['Weight']; ?></td> 
+  
+  <!-- Khối lượng đã nhân với số lượng -->
+<td>
+  <?php 
+    if ($totalWeight >= 1000) {
+      echo rtrim(rtrim(number_format($totalWeight / 1000, 2, '.', ''), '0'), '.') . " kg";
+    } else {
+      echo number_format($totalWeight, 0) . " g";
+    }
+  ?>
+</td>
+<td><?php echo $row['FoodQty'] * $row['ItemQty']; ?> chiếc</td>
+
   <td><?php echo number_format($row['ItemPrice'], 0, ',', '.'); ?> VNĐ</td> 
   <td><?php echo $row['ItemQty']; ?></td> 
   <td><?php echo number_format($total, 0, ',', '.'); ?> VNĐ</td>
@@ -78,6 +105,7 @@ while ($row = mysqli_fetch_array($query)) {
 $grandtotal += $total;
 $cnt++;
 } ?>
+
 
 </table>
      
