@@ -1,6 +1,15 @@
 <?php
 session_start();
 include_once('includes/dbconnection.php');
+$isLoyal = false;
+if (isset($_SESSION['fosuid'])) {
+    $uid = $_SESSION['fosuid'];
+    $rs = mysqli_query($con, "SELECT IsLoyalCustomer FROM tbluser WHERE ID = '$uid'");
+    $user = mysqli_fetch_assoc($rs);
+    if ($user && $user['IsLoyalCustomer'] == 1) {
+        $isLoyal = true;
+    }
+}
 
 if (isset($_POST['submit']) && isset($_POST['foodid'])) {
     $userid = $_SESSION['fosuid'];
@@ -114,7 +123,16 @@ while ($row=mysqli_fetch_array($ret)) {
 									<h4><?php echo $row['ItemName'];?></h4>
 									<p><strong>Loại bánh:</strong><?php echo $row['CategoryName'];?></p>
 									<p><strong>Số lượng bánh nhận được:</strong> <?php echo $row['ItemQty']; ?> chiếc</p>
-									<p><strong>Giá:</strong> <?php echo number_format($row['ItemPrice'], 0, ',', '.'); ?> VNĐ</p>
+									<?php
+$price = $row['ItemPrice'];
+if ($isLoyal) {
+    $discountPrice = $price * 0.9; // giảm 10%
+    echo "<p><strong>Giá:</strong> <del>" . number_format($price, 0, ',', '.') . " VNĐ</del><br><span style='color:red; font-weight: bold;'>" . number_format($discountPrice, 0, ',', '.') . " VNĐ</span></p>";
+} else {
+    echo "<p><strong>Giá:</strong> " . number_format($price, 0, ',', '.') . " VNĐ</p>";
+}
+?>
+
 									<p><strong>Khối lượng:</strong> <?php echo $row['Weight'];?>.</p>
 									<p><strong>Thông tin sản phẩm:</strong> <?php echo $row['ItemDes'];?>.</p>
 									<?php if(!isset($_SESSION['fosuid']) || $_SESSION['fosuid']==""){?>

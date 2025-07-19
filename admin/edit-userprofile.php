@@ -10,11 +10,9 @@ if(isset($_POST['submit']))
     $sid=$_GET['userid'];
     $fname=$_POST['firstname'];
     $lname=$_POST['lastname'];
-    
-   
+$isloyal = isset($_POST['isloyal']) ? 1 : 0;
 
-    $query=mysqli_query($con, "update tbluser set FirstName='$fname', LastName='$lname' where ID='$sid'");
-
+$query = mysqli_query($con, "UPDATE tbluser SET FirstName='$fname', LastName='$lname', IsLoyalCustomer='$isloyal' WHERE ID='$sid'");
 
     if ($query) {
     echo '<script>alert("Hồ sơ đã được cập nhật")</script>';
@@ -58,7 +56,7 @@ if(isset($_POST['submit']))
         </div>
             <div class="row wrapper border-bottom white-bg page-heading">
             <div class="col-lg-10">
-                <h2>User Details</h2>
+                <h2>Chi tiết người dùng</h2>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
                         <a href="dashboard.php">Trang chủ</a>
@@ -112,7 +110,17 @@ while ($row=mysqli_fetch_array($ret)) {
                                             <div class="form-group row"><label class="col-sm-2 col-form-label">Ngày đăng ký:</label>
                                                 <div class="col-sm-10"><input type="text" class="form-control" name="price" readonly="true" value="<?php  echo $row['RegDate'];?>"></div>
                                             </div>
-                                           
+                                           <div class="form-group row">
+    <label class="col-sm-2 col-form-label">Khách hàng thân thiết:</label>
+    <div class="col-sm-10">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="isloyal" value="1"
+                   <?php if ($row['IsLoyalCustomer'] == 1) echo 'checked'; ?>>
+            <label class="form-check-label">Đánh dấu là khách hàng thân thiết</label>
+        </div>
+    </div>
+</div>
+
                                         </fieldset>
 
                                 </fieldset>

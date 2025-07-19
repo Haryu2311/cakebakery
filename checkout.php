@@ -1,61 +1,81 @@
 <?php
 session_start();
-error_reporting(0);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 include_once('includes/dbconnection.php');
-if (strlen($_SESSION['fosuid']==0)) {
-  header('location:logout.php');
-  } else{ 
 
-//placing order
+if (!isset($_SESSION['fosuid']) || strlen($_SESSION['fosuid']) == 0) {
+    header('location:logout.php');
+    exit();
+}
 
-if(isset($_POST['cod']))
-{
-  $var=  $_POST['cod'];
+$userid = $_SESSION['fosuid'];
+$isLoyal = false;
 
-if($var==0)
-{
-   
-if(isset($_POST['placeorder'])){
-    //getting address
-
-    $fnaobno=$_POST['flatbldgnumber'];
-    $street=$_POST['streename'];
-    $area=$_POST['area'];
-    $lndmark=$_POST['landmark'];
-    $city=$_POST['city'];
-    $cod=$_POST['cod'];
-    $userid=$_SESSION['fosuid'];
-//    echo $userd;
-    
-//     return ;
-    $orderno= mt_rand(100000000, 999999999);
-    $query="update tblorders set OrderNumber='$orderno',IsOrderPlaced='1',CashonDelivery='$cod' where UserId='$userid' and IsOrderPlaced is null;";
-    $query.="insert into tblorderaddresses(UserId,Ordernumber,Flatnobuldngno,StreetName,Area,Landmark,City) values('$userid','$orderno','$fnaobno','$street','$area','$lndmark','$city');";
-    
-    $result = mysqli_multi_query($con, $query);
-    if ($result) {
-    
-    echo '<script>alert("Bạn đã đặt đơn thành công số đơn hàng là "+"'.$orderno.'")</script>';
-    echo "<script>window.location.href='my-order.php'</script>";
-    
+// Kiểm tra khách hàng thân thiết
+$checkLoyal = mysqli_query($con, "SELECT IsLoyalCustomer FROM tbluser WHERE ID = '$userid'");
+if ($checkLoyal && mysqli_num_rows($checkLoyal) > 0) {
+    $data = mysqli_fetch_assoc($checkLoyal);
+    if ($data['IsLoyalCustomer'] == 1) {
+        $isLoyal = true;
     }
-    }    
-}
-else
-{
-    $_SESSION['flatbldgnumber']=$_POST['flatbldgnumber'];
-    $_SESSION['streename']=$_POST['streename'];
-    $_SESSION['area']=$_POST['area'];
-    $_SESSION['landmark']=$_POST['landmark'];
-    $_SESSION['city']=$_POST['city'];
-    $_SESSION['cod']=$_POST['cod'];
-    $_SESSION['orderid'] = mt_rand(100000000, 999999999);
- header("Location:http://localhost/cakebakerysystem/vnpay.php");
-
 }
 
-}
-    ?>
+if (isset($_POST['cod'])) {
+    $cod = $_POST['cod'];
+
+    $updatePriceQuery = mysqli_query($con, "
+        SELECT o.ID as OrderID, f.ItemPrice 
+        FROM tblorders o 
+        JOIN tblfood f ON o.FoodId = f.ID 
+        WHERE o.UserId = '$userid' 
+        AND o.IsOrderPlaced IS NULL 
+        AND (o.Price IS NULL OR o.Price = 0)
+    ");
+
+    if ($updatePriceQuery) {
+        while ($row = mysqli_fetch_assoc($updatePriceQuery)) {
+            $orderId = $row['OrderID'];
+            $basePrice = $row['ItemPrice'];
+            $finalPrice = $isLoyal ? $basePrice * 0.9 : $basePrice;
+
+            // Cập nhật vào cột Price
+            mysqli_query($con, "UPDATE tblorders SET Price = '$finalPrice' WHERE ID = '$orderId'");
+    }
+
+    if ($cod == 0 && isset($_POST['placeorder'])) {
+        $fnaobno = $_POST['flatbldgnumber'];
+        $street = $_POST['streename'];
+        $area = $_POST['area'];
+        $lndmark = $_POST['landmark'];
+        $city = $_POST['city'];
+        $orderno = mt_rand(100000000, 999999999);
+
+        $query  = "UPDATE tblorders SET OrderNumber='$orderno', IsOrderPlaced='1', CashonDelivery='$cod' WHERE UserId='$userid' AND IsOrderPlaced IS NULL;";
+        $query .= "INSERT INTO tblorderaddresses(UserId, Ordernumber, Flatnobuldngno, StreetName, Area, Landmark, City) 
+                    VALUES('$userid', '$orderno', '$fnaobno', '$street', '$area', '$lndmark', '$city');";
+
+        $result = mysqli_multi_query($con, $query);
+
+        if ($result) {
+            echo '<script>alert("Bạn đã đặt đơn thành công. Số đơn hàng là ' . $orderno . '")</script>';
+            echo "<script>window.location.href='my-order.php'</script>";
+        }
+    } else {
+        $_SESSION['flatbldgnumber'] = $_POST['flatbldgnumber'];
+        $_SESSION['streename'] = $_POST['streename'];
+        $_SESSION['area'] = $_POST['area'];
+        $_SESSION['landmark'] = $_POST['landmark'];
+        $_SESSION['city'] = $_POST['city'];
+        $_SESSION['cod'] = $_POST['cod'];
+        $_SESSION['orderid'] = mt_rand(100000000, 999999999);
+        header("Location: http://localhost/cakebakerysystem/vnpay.php");
+    }
+}}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
     
@@ -153,22 +173,29 @@ else
                                 <div class="price_single_cost">
                                     <h5>Sản phẩm <span>Tổng cộng</span></h5>
                                     <?php 
-                                    $userid = $_SESSION['fosuid'];
                                     $grandtotal = 0;
-                                    $query = mysqli_query($con, "SELECT tblfood.Image, tblfood.ItemName, tblfood.ItemDes, tblfood.Weight, tblfood.ItemPrice, tblorders.ItemQty, tblorders.FoodId 
-                                        FROM tblorders 
-                                        JOIN tblfood ON tblfood.ID = tblorders.FoodId 
-                                        WHERE tblorders.UserId = '$userid' AND tblorders.IsOrderPlaced IS NULL");
+$query = mysqli_query($con, "SELECT tblfood.Image, tblfood.ItemName, tblfood.ItemDes, tblfood.Weight, tblfood.ItemPrice, tblorders.ItemQty, tblorders.FoodId 
+    FROM tblorders 
+    JOIN tblfood ON tblfood.ID = tblorders.FoodId 
+    WHERE tblorders.UserId = '$userid' AND tblorders.IsOrderPlaced IS NULL");
 
-                                    if (mysqli_num_rows($query) > 0) {
-                                        while ($row = mysqli_fetch_array($query)) {
-                                            $total = $row['ItemPrice'] * $row['ItemQty'];
-                                            $grandtotal += $total;
+if (mysqli_num_rows($query) > 0) {
+    while ($row = mysqli_fetch_array($query)) {
+        $price = $row['ItemPrice'];
+        $qty = $row['ItemQty'];
+
+        // Tính giá sau giảm nếu là khách hàng thân thiết
+        if ($isLoyal) {
+            $price = $price * 0.9; // giảm 10%
+        }
+
+        $total = $price * $qty;
+        $grandtotal += $total;
                                     ?>
                                     <h5>
-                                        <?php echo $row['ItemName']; ?> (x<?php echo $row['ItemQty']; ?>)
-                                        <span><?php echo number_format($total, 0, ',', '.'); ?> VNĐ</span>
-                                    </h5>
+    <?php echo $row['ItemName']; ?> (x<?php echo $qty; ?>)
+    <span><?php echo number_format($total, 0, ',', '.'); ?> VNĐ</span>
+</h5>
                                     <?php 
                                         } 
                                     }
@@ -272,4 +299,4 @@ document.getElementById("confirmVnpayBtn").addEventListener("click", function ()
         <script src="js/theme.js"></script>
     </body>
 
-</html><?php }?>
+</html><?php?}>

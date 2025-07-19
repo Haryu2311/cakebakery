@@ -2,6 +2,16 @@
 session_start();
 error_reporting(0);
 include_once('includes/dbconnection.php');
+$userid = $_SESSION['fosuid'];
+$isLoyal = false;
+$checkLoyal = mysqli_query($con, "SELECT IsLoyalCustomer FROM tbluser WHERE ID = '$userid'");
+if ($checkLoyal && mysqli_num_rows($checkLoyal) > 0) {
+    $data = mysqli_fetch_assoc($checkLoyal);
+    if ($data['IsLoyalCustomer'] == 1) {
+        $isLoyal = true;
+    }
+}
+
 if (strlen($_SESSION['fosuid']==0)) {
   header('location:logout.php');
   } else{ 
@@ -131,13 +141,25 @@ while ($row=mysqli_fetch_array($query)) {
 								</td>
 								<td><?php echo $row['ItemName']?></td>
 								<td><?php echo $row['FoodQty'] * $row['ItemQty']; ?> chiếc</td>
-								<td><?php echo number_format($total = $row['ItemPrice']* $row['ItemQty'], 0, ',', '.'); ?> VNĐ
-									<?php 
-$grandtotal+=$total;
-$cnt=$cnt+1; 
-                           
- ?>
-								</td>
+<td>
+<?php
+$price = $row['ItemPrice'];
+$qty = $row['ItemQty'];
+$total = $price * $qty;
+
+if ($isLoyal) {
+    $discountPrice = $price * 0.9;
+    $discountTotal = $discountPrice * $qty;
+    echo "<del>" . number_format($total, 0, ',', '.') . " VNĐ</del><br>";
+    echo "<span style='color:red;'>" . number_format($discountTotal, 0, ',', '.') . " VNĐ</span>";
+    $grandtotal += $discountTotal;
+} else {
+    echo number_format($total, 0, ',', '.') . " VNĐ";
+    $grandtotal += $total;
+}
+?>
+</td>
+
 								<td>
     <?php
         // Chuyển weight dạng chuỗi sang số gram
@@ -175,7 +197,16 @@ $cnt=$cnt+1;
 									</td>
 								</form>
 
-								<td><?php echo number_format($total, 0, ',', '.'); ?> VNĐ</td>
+								<td>
+<?php
+    if ($isLoyal) {
+        echo number_format($discountTotal, 0, ',', '.') . " VNĐ";
+    } else {
+        echo number_format($total, 0, ',', '.') . " VNĐ";
+    }
+?>
+</td>
+
 								<td><a href="cart.php?delid=<?php echo $row['ID'];?>" onclick="return confirm('Bạn thật sự muốn xóa?');"><i class="fa fa-trash fa-delete" aria-hidden="true"></i></a></td>
 							</tr><?php $cnt++; } }?>
 							<tr>

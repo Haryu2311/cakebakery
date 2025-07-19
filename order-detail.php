@@ -96,6 +96,7 @@ $link .= $_SERVER['HTTP_HOST'];
 
 // Getting order Details
 $userid= $_SESSION['fosuid'];
+
 $ret=mysqli_query($con,"select OrderTime,OrderFinalStatus from tblorderaddresses where UserId='$userid' and Ordernumber='$oid'");
 while($result=mysqli_fetch_array($ret)) {
 ?>
@@ -115,10 +116,18 @@ echo $result['OrderFinalStatus'];
 <p>
  <a href="javascript:void(0);" onClick="popUpWindow('invoice.php?oid=<?php echo $oid;?>&&odate=<?php echo $od;?>');" title="Order Invoice" style="color:#000" class="btn pest_btn">  Hóa đơn</a></p>
 					<?php 
-                                $userid= $_SESSION['fosuid'];
+$userid= $_SESSION['fosuid'];
+$isLoyal = false;
+$checkLoyal = mysqli_query($con, "SELECT IsLoyalCustomer FROM tbluser WHERE ID = '$userid'");
+if ($checkLoyal && mysqli_num_rows($checkLoyal) > 0) {
+    $loyal = mysqli_fetch_assoc($checkLoyal);
+    if ($loyal['IsLoyalCustomer'] == 1) {
+        $isLoyal = true;
+    }
+}
 $query=mysqli_query($con,"
     SELECT tblfood.Image, tblfood.ItemName, tblorders.FoodQty, tblfood.Weight, tblfood.ItemPrice,
-           tblorders.ItemQty, tblorders.FoodId, tblorders.OrderNumber, tblorders.CashonDelivery
+           tblorders.ItemQty, tblorders.Price, tblorders.FoodId, tblorders.OrderNumber, tblorders.CashonDelivery
     FROM tblorders
     JOIN tblfood ON tblfood.ID = tblorders.FoodId
     WHERE tblorders.UserId = '$userid' AND tblorders.OrderNumber = $oid");
@@ -189,14 +198,14 @@ while ($row=mysqli_fetch_array($query)) {
     echo $row['CashonDelivery'] == 0 ? 'Thanh toán khi nhận hàng (COD)' : 'Thanh toán online';
   ?>
 </td>
-
- <td>
+    <td>
     <?php 
-      $total = $row['ItemPrice'] * $row['ItemQty'];
-      echo number_format($total, 0, ',', '.'); 
-      $grandtotal += $total;
+        $price = $row['Price']; // Giá đã cố định, có thể là giá gốc hoặc đã giảm
+        $total = $price * $row['ItemQty'];
+        echo number_format($total, 0, ',', '.'); 
+        $grandtotal += $total;
     ?> VNĐ
-  </td>
+    </td>
 </tr>
 <?php 
   $cnt++;
@@ -208,8 +217,8 @@ while ($row=mysqli_fetch_array($query)) {
 <?php } ?>
 
 <tr>
-  <th colspan="8" style="text-align: center;">Tổng cộng</th>    
-  <th><?php echo number_format($grandtotal, 0, ',', '.'); ?> VNĐ</th>
+    <th colspan="8" style="text-align: center;">Tổng cộng</th>    
+    <th><?php echo number_format($grandtotal, 0, ',', '.'); ?> VNĐ</th>
 </tr>
 
 						</tbody>

@@ -49,13 +49,13 @@ if (strlen($_SESSION['fosaid']==0)) {
                                     <p style="color: blue; text-align: center;  font-size: 30px">Chi tiết người dùng </p>
               <thead>
                 <tr>
-                  <th>STT</th>
-                  <th>Tên</th>
-                  <th>Họ</th>
-                  <th>Số điện thoại</th>
-                  <th>Email</th>
-              
-                   <th>Thực hiện </th>
+                    <th>STT</th>
+                    <th>Tên</th>
+                    <th>Họ</th>
+                    <th>Số điện thoại</th>
+                    <th>Email</th>
+                    <th>Loại tài khoản</th>
+                    <th>Thực hiện </th>
                 </tr>
               </thead>
               <?php
@@ -64,16 +64,16 @@ $cnt=1;
 while ($row=mysqli_fetch_array($ret)) {
 
 ?>
-              <tbody>
-                 <tr>
-                  <td><?php echo $cnt;?></td>
-              
-                  <td><?php  echo $row['FirstName'];?></td>
-                  <td><?php  echo $row['LastName'];?></td>
-                  <td><?php  echo $row['MobileNumber'];?></td>
-                  <td><?php  echo $row['Email'];?></td>
-                  
-                
+                <tbody>
+                    <tr>
+                    <td><?php echo $cnt;?></td>     
+                    <td><?php  echo $row['FirstName'];?></td>
+                    <td><?php  echo $row['LastName'];?></td>
+                    <td><?php  echo $row['MobileNumber'];?></td>
+                    <td><?php  echo $row['Email'];?></td>
+                    <td>
+                        <?php echo $row['IsLoyalCustomer'] ? '<span class="badge badge-success">Thân thiết</span>' : 'Bình thường'; ?>
+                    </td>
                  <td><a href="edit-userprofile.php?userid=<?php echo $row['ID'];?>">Chỉnh sửa chi tiết người dùng</a></td>
                 </tr>
                 <?php 

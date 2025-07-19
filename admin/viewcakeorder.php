@@ -180,7 +180,7 @@ if($row['OrderFinalStatus']=="Đơn hàng đã bị hủy")
      </div>
 <div class="col-6" style="margin-top:2%">
   <?php  
-$query=mysqli_query($con,"select tblfood.Image,tblfood.ItemName,tblorders.FoodQty, tblfood.ItemDes,tblfood.ItemPrice,tblorders.ItemQty,tblfood.Weight,tblorders.FoodId,tblorders.CashonDelivery from tblorders join tblfood on tblfood.ID=tblorders.FoodId where tblorders.IsOrderPlaced=1 and tblorders.OrderNumber='$oid'");
+$query=mysqli_query($con,"select tblfood.Image,tblfood.ItemName,tblorders.Price, tblorders.FoodQty, tblfood.ItemDes,tblfood.ItemPrice,tblorders.ItemQty,tblfood.Weight,tblorders.FoodId,tblorders.CashonDelivery from tblorders join tblfood on tblfood.ID=tblorders.FoodId where tblorders.IsOrderPlaced=1 and tblorders.OrderNumber='$oid'");
 $num=mysqli_num_rows($query);
 $cnt=1;?>
 <table border="1" class="table table-bordered mg-b-0">
@@ -201,10 +201,13 @@ $cnt=1;?>
 <?php  
 $cnt = 1;
 $grandtotal = 0;
+$userid = $_SESSION['fosuid'] ?? null;
+$isLoyal = false;
 
 while ($row1 = mysqli_fetch_array($query)) {
-  $itemTotal = $row1['ItemPrice'] * $row1['ItemQty'];
-  $grandtotal += $itemTotal;
+    $price = $row1['Price']; // Lấy giá cố định từ CSDL
+    $itemTotal = $price * $row1['ItemQty'];
+    $grandtotal += $itemTotal;
 ?>
 
 <tr>

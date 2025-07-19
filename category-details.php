@@ -1,6 +1,15 @@
 <?php
 session_start();
 include_once('includes/dbconnection.php');
+$isLoyal = false;
+if (isset($_SESSION['fosuid'])) {
+    $uid = $_SESSION['fosuid'];
+    $rs = mysqli_query($con, "SELECT IsLoyalCustomer FROM tbluser WHERE ID = '$uid'");
+    $user = mysqli_fetch_assoc($rs);
+    if ($user && $user['IsLoyalCustomer'] == 1) {
+        $isLoyal = true;
+    }
+}
 
 if (isset($_POST['submit']) && isset($_POST['foodid'])) {
     $userid = $_SESSION['fosuid'];
@@ -127,7 +136,15 @@ while ($row=mysqli_fetch_array($ret)) {
                                 </a>
                             </div>
 							<div class="cake_text">
-								<h4><?php echo number_format($row['ItemPrice'], 0, ',', '.'); ?> VNĐ</h4>
+								                                    <?php
+$price = $row['ItemPrice'];
+if ($isLoyal) {
+    $discountPrice = $price * 0.9; // giảm 10%
+echo "<h3><del>" . number_format($price, 0, ',', '.') . " VNĐ</del><br><span style='color:red;'>" . number_format($discountPrice, 0, ',', '.') . " VNĐ</span></h4>";
+} else {
+    echo "<h3>" . number_format($price, 0, ',', '.') . " VNĐ</h4>";
+}
+?>
 								<h3><a href="cake-detail.php?fid=<?php echo $row['ID'];?>"><?php echo $row['ItemName'];?></a></h3>
 								<?php if(!isset($_SESSION['fosuid']) || $_SESSION['fosuid']==""){?>
        								<a href="login.php" class="pest_btn">Thêm vào giỏ</a>
