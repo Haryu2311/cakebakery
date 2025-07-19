@@ -81,7 +81,10 @@ $name=$row['AdminName'];
                        
                     </ul>
                 </li>
-        
+            <li>
+    <a href="manage-contact.php"><i class="fa fa-envelope"></i> <span class="nav-label">Quản lý liên hệ</span></a>
+</li>
+
                 <!-- <li>
                     <a href="#"><i class="fa fa-file"></i> <span class="nav-label">Enquiry</span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse">
