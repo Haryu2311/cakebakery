@@ -81,7 +81,7 @@ echo "<script>window.location.href ='contact.php'</script>";
         	<div class="container">
         		<div class="main_title">
 					<h2>Liên hệ</h2>
-					<h5>Bạn có điều gì muốn nói với chúng tôi không? Vui lòng kết nối với chúng tôi bằng biểu mẫu liên hệ của chúng tôi..</h5>
+					<h5>Bạn có điều gì muốn nói với chúng tôi không? Vui lòng nhập đúng email của bạn chúng tôi sẽ phản hồi lại cho bạn thông qua email một cách sớm nhất!</h5>
 				</div>
        			<div class="row">
        				<div class="col-lg-7">

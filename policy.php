@@ -2,6 +2,64 @@
 session_start();
 error_reporting(0);
 include('includes/dbconnection.php');
+function formatPolicyText($text) {
+    $lines = explode("\n", $text);
+    $html = '';
+    $inList = false;
+    $bufferQuestion = null;
+
+    foreach ($lines as $line) {
+        $line = trim($line);
+        if ($line === '') {
+            continue;
+        }
+
+        // Gạch đầu dòng
+        if (preg_match('/^[-•*]\s+(.+)/', $line, $matches)) {
+            if (!$inList) {
+                $html .= '<ul>';
+                $inList = true;
+            }
+            $html .= '<li>' . htmlspecialchars($matches[1]) . '</li>';
+        }
+        // Dòng là tiêu đề kiểu "5.1. Mục đích" hoặc là câu hỏi có dấu hỏi
+        elseif (preg_match('/^\d+(\.\d+)*\.\s+.+/', $line) || preg_match('/^[^:]+[\?？]$/u', $line)) {
+            if ($inList) {
+                $html .= '</ul>';
+                $inList = false;
+            }
+            if ($bufferQuestion !== null) {
+                $html .= '<p>' . $bufferQuestion . '</p>';
+            }
+            $bufferQuestion = '<b>' . htmlspecialchars($line) . '</b>';
+        }
+        // Nội dung trả lời
+        else {
+            if ($bufferQuestion !== null) {
+                $html .= '<p>' . $bufferQuestion . '</p>';
+                $bufferQuestion = null;
+            }
+            if ($inList) {
+                $html .= '</ul>';
+                $inList = false;
+            }
+            $html .= '<p>' . htmlspecialchars($line) . '</p>';
+        }
+    }
+
+    // Nếu còn câu hỏi chưa xử lý
+    if ($bufferQuestion !== null) {
+        $html .= '<p>' . $bufferQuestion . '</p>';
+    }
+
+    if ($inList) {
+        $html .= '</ul>';
+    }
+
+    return $html;
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -85,7 +143,7 @@ include('includes/dbconnection.php');
 
             while ($row = mysqli_fetch_array($query)) {
                 echo '<h1 id="' . htmlspecialchars($row['slug']) . '" style="padding-top:120px; margin-top:-120px;">' . htmlspecialchars($row['title']) . '</h2>';
-                echo '<div class="policy-content">' . $row['content'] . '</div>';
+                echo '<div class="policy-content">' . formatPolicyText($row['content']) . '</div>';
                 echo '<hr style="margin: 40px 0;">';
             }
             ?>
