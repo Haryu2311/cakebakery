@@ -34,16 +34,17 @@ if (isset($_POST['cod'])) {
         AND o.IsOrderPlaced IS NULL 
         AND (o.Price IS NULL OR o.Price = 0)
     ");
+if ($updatePriceQuery) {
+    while ($row = mysqli_fetch_assoc($updatePriceQuery)) {
+        $orderId = $row['OrderID'];
+        $basePrice = $row['ItemPrice'];
+        $finalPrice = $isLoyal ? $basePrice * 0.9 : $basePrice;
 
-    if ($updatePriceQuery) {
-        while ($row = mysqli_fetch_assoc($updatePriceQuery)) {
-            $orderId = $row['OrderID'];
-            $basePrice = $row['ItemPrice'];
-            $finalPrice = $isLoyal ? $basePrice * 0.9 : $basePrice;
-
-            // Cập nhật vào cột Price
-            mysqli_query($con, "UPDATE tblorders SET Price = '$finalPrice' WHERE ID = '$orderId'");
+        // Cập nhật vào cột Price
+        mysqli_query($con, "UPDATE tblorders SET Price = '$finalPrice' WHERE ID = '$orderId'");
     }
+} // <-- thêm dòng này để đóng if
+
 
     if ($cod == 0 && isset($_POST['placeorder'])) {
         $fnaobno = $_POST['flatbldgnumber'];
@@ -71,9 +72,9 @@ if (isset($_POST['cod'])) {
         $_SESSION['city'] = $_POST['city'];
         $_SESSION['cod'] = $_POST['cod'];
         $_SESSION['orderid'] = mt_rand(100000000, 999999999);
-        header("Location: http://localhost/cakebakerysystem/vnpay.php");
+        header("Location: http://comicstore.lovestoblog.com/vnpay.php");
     }
-}}
+}
 ?>
 
 <!DOCTYPE html>
@@ -299,4 +300,4 @@ document.getElementById("confirmVnpayBtn").addEventListener("click", function ()
         <script src="js/theme.js"></script>
     </body>
 
-</html><?php?}>
+</html><?php?>

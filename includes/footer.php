@@ -27,6 +27,16 @@ $query = mysqli_query($con, "SELECT title, slug FROM tblpolicy ORDER BY id ASC")
 <!--================Newsletter Area =================-->
         <!--================End Newsletter Area =================-->
         <!--================Footer Area =================-->
+        <iframe
+  src="https://maps.google.com/maps?q=10.046319,105.768832&z=18&output=embed"
+  width="100%"
+  height="250"
+  style="border:0; border-radius: 8px;"
+  allowfullscreen=""
+  loading="lazy"
+  referrerpolicy="no-referrer-when-downgrade">
+</iframe>
+
         <footer class="footer_area">
             <div class="footer_widgets">
                 <div class="container">
@@ -146,11 +156,15 @@ while ($row=mysqli_fetch_array($ret)) {
                                 <p>Địa chỉ : <br /><?php  echo $row['PageDescription'];?></p>
                                 <h5>Email : <?php  echo $row['Email'];?>n</h5><?php } ?>
                             </aside>
+                            
                         </div>
                     </div>
                 </div>
+                
             </div>
+            
         </footer>
+        
         <script>
 document.addEventListener("DOMContentLoaded", function () {
     var toggleBtn = document.getElementById("toggle-more-policies");

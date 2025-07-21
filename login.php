@@ -94,9 +94,14 @@ if (isset($_POST['login'])) {
 				</div>
        			<div class="row">
        				<div class="col-lg-7">
-                <p style="font-size:16px; color:red" align="center"> <?php if($msg){
-    echo $msg;
-  }  ?> </p>
+          <?php
+        if (isset($_GET['success']) && $_GET['success'] == '1') {
+            echo '<p style="color: green; font-weight: bold; text-align: center;">Đăng ký thành công! Vui lòng đăng nhập để tiếp tục.</p>';
+        }
+        if (isset($msg)) {
+            echo '<p style="color: red; text-align: center;">' . $msg . '</p>';
+        }
+        ?>
        					<form class="row contact_us_form"action="" name="login" method="post">
 							<div class="form-group col-md-12">
 								<input type="text" class="form-control" name="emailcont" required="true" placeholder="Email" required="true">
@@ -183,7 +188,17 @@ while ($row=mysqli_fetch_array($ret)) {
         <script src="js/jquery.form.js"></script>
         <script src="js/jquery.validate.min.js"></script>
         <script src="js/contact.js"></script>
-        
+        <script>
+  if (window.location.search.includes("success=1")) {
+    // Sau 3 giây, xóa ?success=1 khỏi URL
+    setTimeout(() => {
+      const url = new URL(window.location);
+      url.searchParams.delete("success");
+      window.history.replaceState({}, document.title, url.toString());
+    }, 3000);
+  }
+</script>
+
         <script src="js/theme.js"></script>
     </body>
 

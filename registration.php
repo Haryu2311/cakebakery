@@ -33,11 +33,13 @@ if (mysqli_num_rows($email_user) > 0 || mysqli_num_rows($email_admin) > 0) {
     $query = mysqli_query($con, "INSERT INTO tbluser(FirstName, LastName, MobileNumber, Email, Password) 
         VALUES('$fname', '$lname', '$contno', '$email', '$password')");
 
-    if ($query) {
-        $msg = "Đăng ký thành công!";
-    } else {
-        $msg = "Đã xảy ra lỗi. Vui lòng thử lại.";
-    }
+            if ($query) {
+                // Chuyển đến trang đăng nhập sau khi đăng ký thành công
+                header("Location: login.php?success=1");
+                exit();
+            } else {
+                $msg = "Đã xảy ra lỗi. Vui lòng thử lại.";
+            }
 }
 
     }
