@@ -106,11 +106,10 @@ if (isset($_POST['login'])) {
 							<div class="form-group col-md-12">
 								<input type="text" class="form-control" name="emailcont" required="true" placeholder="Email" required="true">
 							</div>
-             <!-- <h6 style="padding-left: 20px"><a href="forgot-password.php">Quên mật khẩu?</a></h6> -->
               <div class="form-group col-md-12" style="padding-top: 20px;">
                 <input type="password" class="form-control" id="password" name="password" placeholder="Mật khẩu" required="true">
               </div>
-              
+              <h6 style="padding-left: 20px"><a href="forgot-password.php">Quên mật khẩu?</a></h6>
               <div class="form-group col-md-12 d-flex justify-content-between align-items-center">
               <!-- Nút Đăng nhập -->
               <button type="submit" value="submit" name="login" class="btn order_s_btn" style="width:48%;">Đăng nhập</button>

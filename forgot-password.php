@@ -3,31 +3,30 @@ session_start();
 error_reporting(0);
 include('includes/dbconnection.php');
 
-if(isset($_POST['submit']))
-  {
-    $contactno=$_POST['contactno'];
-    $email=$_POST['email'];
-$password=($_POST['newpassword']);
-        $query=mysqli_query($con,"select ID from tbluser where  Email='$email' and MobileNumber='$contactno' ");
-        
-    $ret=mysqli_num_rows($query);
-    if($ret>0){
-      $_SESSION['contactno']=$contactno;
-      $_SESSION['email']=$email;
-      $query1=mysqli_query($con,"update tbladmin set Password='$password'  where  Email='$email' && MobileNumber='$contactno' ");
-       if($query1)
-   {
-echo "<script>alert('Password successfully changed');</script>";
+if (isset($_POST['submit'])) {
+    $contactno = $_POST['contactno'];
+    $email = $_POST['email'];
+    $password = $_POST['newpassword'];
 
-   }
-     
+    $query = mysqli_query($con, "SELECT ID FROM tbluser WHERE Email='$email' AND MobileNumber='$contactno'");
+    $ret = mysqli_num_rows($query);
+
+    if ($ret > 0) {
+        $_SESSION['contactno'] = $contactno;
+        $_SESSION['email'] = $email;
+        $query1 = mysqli_query($con, "UPDATE tbluser SET Password='$password' WHERE Email='$email' AND MobileNumber='$contactno'");
+
+        if ($query1) {
+echo "<script>alert('Thay đổi mật khẩu thành công!'); window.location.href='login.php';</script>";
+
+        } else {
+            echo "<script>alert('Cập nhật mật khẩu thất bại.');</script>";
+        }
+    } else {
+        echo "<script>alert('Thông tin không hợp lệ. Vui lòng thử lại.');</script>";
     }
-    else{
-    
-      echo "<script>alert('Invalid Details. Please try again.');</script>";
-    }
-  }
-  ?>
+}
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -67,7 +66,7 @@ function checkpass()
 {
 if(document.changepassword.newpassword.value!=document.changepassword.confirmpassword.value)
 {
-alert('New Password and Confirm Password field does not match');
+alert('Trường Mật khẩu mới và Xác nhận mật khẩu không khớp');
 document.changepassword.confirmpassword.focus();
 return false;
 }
@@ -98,63 +97,51 @@ return true;
         
         <!--================Contact Form Area =================-->
         <section class="contact_form_area p_100">
-        	<div class="container">
-        		<div class="main_title">
-					<h2>Quên mật khẩu!!</h2>
-					<h5>Đặt lại mật khẩu của bạn và điền thông tin bên dưới.</h5>
-				</div>
-       			<div class="row">
-       				<div class="col-lg-7">
-                
-       					<form class="row contact_us_form"action="" method="post" name="changepassword" onsubmit="return checkpass();">
-							<div class="form-group col-md-12">
-								 <input type="text" class="form-control" name="email" placeholder="Enter Your Email" required="true">
-							</div>
-             <div class="form-group col-md-12">
-                 <input type="text" class="form-control" name="contactno" placeholder="Contact Number" required="true" pattern="[0-9]+">
+  <div class="container">
+    <div class="main_title text-center">
+      <h2>Quên mật khẩu!!</h2>
+      <h5>Vui lòng nhập email và số điện thoại khớp với tài khoản đã đăng nhập!</h5>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-lg-6">
+        <form class="contact_us_form" action="" method="post" name="changepassword" onsubmit="return checkpass();">
+          <div class="form-group mb-3">
+            <input type="text" class="form-control" name="email" placeholder="Nhập email của bạn" required>
+          </div>
+          <div class="form-group mb-3">
+            <input type="text" class="form-control" name="contactno" placeholder="Số liên lạc" required pattern="[0-9]+">
+          </div>
+          <div class="form-group mb-3">
+            <input type="password" class="form-control" id="userpassword" name="newpassword" placeholder="Mật khẩu mới" required>
+          </div>
+          <div class="form-group mb-4">
+            <input type="password" class="form-control" name="confirmpassword" placeholder="Xác nhận mật khẩu" required>
+          </div>
+          <div class="form-group">
+            <div class="row">
+              <div class="col-4 mb-2">
+                <a href="registration.php" class="btn order_s_btn w-100 text-center">
+                  <i class="ft-user"></i> Đăng ký
+                </a>
               </div>
-              <div class="form-group col-md-12">
-                 <input type="password" class="form-control" id="userpassword" name="newpassword" placeholder="New Password">
+              <div class="col-4 mb-2">
+                <a href="login.php" class="btn order_s_btn w-100 text-center">
+                  <i class="ft-user"></i> Đăng nhập
+                </a>
               </div>
-              <div class="form-group col-md-12" style="padding-top: 20px;">
-                <input type="password" class="form-control" id="userpassword" name="confirmpassword" placeholder="Confirm Password">
+              <div class="col-4 mb-2">
+                <button type="submit" name="submit" class="btn order_s_btn w-100">
+                  Cài lại
+                </button>
               </div>
-              
-							<div class="form-group col-md-12">
-								<button type="submit" value="submit" name="submit" class="btn order_s_btn form-control">Cài lại</button>
-							</div>
-              <div class="form-group col-md-12">
-                <a href="registration.php" class="btn order_s_btn form-control"><i class="ft-user"></i> Đăng ký</a> <strong>Đăng ký với chúng tôi!!!!</strong>
-              </div>
-              <div class="form-group col-md-12">
-                <a href="Login.php" class="btn order_s_btn form-control"><i class="ft-user"></i> Đăng nhập</a> 
-              </div>
-						</form>
-            
-       				</div>
-       				<div class="col-lg-4 offset-md-1">
-       					<div class="contact_details">
-       						<?php
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
 
-$ret=mysqli_query($con,"select * from tblpage where PageType='contactus' ");
-$cnt=1;
-while ($row=mysqli_fetch_array($ret)) {
-
-?>
-       						<div class="contact_d_item">
-       							<h3>Địa chỉ:</h3>
-       							<p><?php  echo $row['PageDescription'];?></p>
-       						</div>
-       						<div class="contact_d_item">
-       							<h5>Số điện thoại: <?php  echo $row['MobileNumber'];?></h5>
-       							<h5>Email: <?php  echo $row['Email'];?></h5>
-       						</div>
-       						
-       					</div>
-       				</div><?php } ?>
-       			</div>
-        	</div>
-        </section>
         <!--================End Contact Form Area =================-->
         
         

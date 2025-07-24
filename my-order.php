@@ -106,8 +106,8 @@ function renderOrderTable($con, $userid, $statusFilter, $title) {
 $userid = $_SESSION['fosuid'];
 
 renderOrderTable($con, $userid, null, 'cho-xac-nhan');
-renderOrderTable($con, $userid, 'Đơn hàng đã được xác nhận', 'da-xac-nhan');
-renderOrderTable($con, $userid, ['Bánh đang được chuẩn bị', 'Nhận bánh'], 'dang-giao');
+renderOrderTable($con, $userid, ['Đơn hàng đã được xác nhận', 'Bánh đang được chuẩn bị'], 'da-xac-nhan');
+renderOrderTable($con, $userid, 'Nhận bánh', 'dang-giao');
 renderOrderTable($con, $userid, 'Bánh được giao', 'da-giao');
 renderOrderTable($con, $userid, 'Đơn hàng đã bị hủy', 'da-huy');
 
